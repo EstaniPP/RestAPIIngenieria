@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+const mysqlConnection  = require('./database.js');
+
 // Settings
 app.set('port',process.env.PORT || 3000);
 
@@ -9,10 +11,11 @@ app.use(express.json());
 
 
 // Routes
-app.use()
+//LogIn y registrarse
+app.use(require('./controllers/authController'));
 
 //Starting server
 app.listen(app.get('port'), () => {
-    console.log('Server andando');
+    console.log('Server andando en port');
 });
 
