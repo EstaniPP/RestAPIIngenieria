@@ -1,31 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.8.5
--- https://www.phpmyadmin.net/
---
--- Host: localhost:8889
--- Generation Time: May 16, 2020 at 11:51 AM
--- Server version: 5.7.25
--- PHP Version: 7.3.1
-
-SET FOREIGN_KEY_CHECKS=0;
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `world`
---
-
-
---
--- Dumping data for table `countries`
---
-
 INSERT INTO `countries` (`id`, `name`, `iso3`, `iso2`, `phonecode`, `capital`, `currency`, `native`, `emoji`, `emojiU`, `created_at`, `updated_at`, `flag`, `wikiDataId`) VALUES
 (1, 'Afghanistan', 'AFG', 'AF', '93', 'Kabul', 'AFN', 'افغانستان', '🇦🇫', 'U+1F1E6 U+1F1EB', '2018-07-20 20:11:03', '2020-05-16 10:49:11', 1, 'Q889'),
 (2, 'Aland Islands', 'ALA', 'AX', '+358-18', 'Mariehamn', 'EUR', 'Åland', '🇦🇽', 'U+1F1E6 U+1F1FD', '2018-07-20 20:11:03', '2020-05-16 10:49:11', 1, NULL),
@@ -274,9 +246,3 @@ INSERT INTO `countries` (`id`, `name`, `iso3`, `iso2`, `phonecode`, `capital`, `
 (245, 'Yemen', 'YEM', 'YE', '967', 'Sanaa', 'YER', 'اليَمَن', '🇾🇪', 'U+1F1FE U+1F1EA', '2018-07-20 20:11:03', '2020-05-16 10:49:11', 1, 'Q805'),
 (246, 'Zambia', 'ZMB', 'ZM', '260', 'Lusaka', 'ZMK', 'Zambia', '🇿🇲', 'U+1F1FF U+1F1F2', '2018-07-20 20:11:03', '2020-05-16 10:49:11', 1, 'Q953'),
 (247, 'Zimbabwe', 'ZWE', 'ZW', '263', 'Harare', 'ZWL', 'Zimbabwe', '🇿🇼', 'U+1F1FF U+1F1FC', '2018-07-20 20:11:03', '2020-05-16 10:49:11', 1, 'Q954');
-
-
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

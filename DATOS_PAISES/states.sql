@@ -1,32 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.8.5
--- https://www.phpmyadmin.net/
---
--- Host: localhost:8889
--- Generation Time: May 24, 2020 at 12:09 PM
--- Server version: 5.7.25
--- PHP Version: 7.3.1
-
-SET FOREIGN_KEY_CHECKS=0;
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `world`
---
-
--- --------------------------------------------------------
-
---
--- Dumping data for table `states`
---
-
 INSERT INTO `states` (`id`, `name`, `country_id`, `country_code`, `fips_code`, `iso2`, `created_at`, `updated_at`, `flag`, `wikiDataId`) VALUES
 (1, 'Southern Nations, Nationalities, and Peoples\' Region', 70, 'ET', '54', 'SN', '2019-10-05 17:48:35', '2019-10-05 17:48:35', 1, 'Q203193'),
 (2, 'Somali Region', 70, 'ET', '52', 'SO', '2019-10-05 17:48:35', '2019-10-05 17:48:35', 1, 'Q202800'),
@@ -4892,32 +4863,3 @@ INSERT INTO `states` (`id`, `name`, `country_id`, `country_code`, `fips_code`, `
 (4852, 'Ladakh', 101, 'IN', NULL, 'LA', '2019-10-05 17:48:57', '2019-10-05 17:48:57', 1, 'MANUAL'),
 (4853, 'West Bengal', 101, 'IN', '28', 'WB', '2019-10-05 17:48:57', '2020-05-24 11:51:17', 1, 'Q1356'),
 (4854, 'Sinop Province', 225, 'TR', '57', '57', '2020-05-24 17:48:46', '2020-05-24 17:48:46', 1, 'Q134413');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `states`
---
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `states`
---
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `states`
---
-
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
