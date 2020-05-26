@@ -39,7 +39,7 @@ router.post('/exercises/', (req, res) => {
 router.put('/exercises/:id', (req, res) => {
     const { id } = req.params;
     const { description, path } = req.body;
-    const query = 'UPDATE Exercises SET description = ?, path = ? WHERE id = ? ';
+    const query = 'UPDATE Exercises SET description = ?, path = ? WHERE id = ?';
     mysqlConnection.query(query, [description, path, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Exercise updated'});

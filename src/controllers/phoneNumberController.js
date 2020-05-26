@@ -25,9 +25,9 @@ router.get('/phoneNumbers/:id', (req, res) => {
 });
 
 router.post('/phoneNumbers/', (req, res) => {
-    const { user_id, number } = req.body;
+    const { userId, number } = req.body;
     const query = 'INSERT INTO Phone_Numbers(user_id, number) VALUES (?,?)';
-    mysqlConnection.query(query, [user_id, number], (err, rows, fields) => {
+    mysqlConnection.query(query, [userId, number], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Phone number saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/phoneNumbers/', (req, res) => {
 
 router.put('/phoneNumbers/:id', (req, res) => {
     const { id } = req.params;
-    const { user_id, number } = req.body;
-    const query = 'UPDATE Phone_Numbers SET user_id = ?, number = ? WHERE id = ? ';
-    mysqlConnection.query(query, [user_id, number, id], (err, rows, fields) => {
+    const { userId, number } = req.body;
+    const query = 'UPDATE Phone_Numbers SET user_id = ?, number = ? WHERE id = ?';
+    mysqlConnection.query(query, [userId, number, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Phone number updated'});
         } else {
