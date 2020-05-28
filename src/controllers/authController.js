@@ -6,10 +6,12 @@ const mysqlConnection  = require('../database.js');
 const jwt = require('jsonwebtoken');
 const secret = "mysecretpassword";
 const bcrypt = require('bcryptjs');
+const emailValidation = require('../functionalMethods/emailValidation');
+const dateValidation = require('../functionalMethods/dateValidation');
 
-router.post('/signin', async (req, res) => {
+router.post('/signin/', async (req, res) => {
+    if(!req.body.email || !req.body.password)
     const email = req.body.email;
-    console.log(email);
     let user; 
     mysqlConnection.query('SELECT * FROM users WHERE email = ?', email, async (err, rows, fields) => {
         if (!err) {
@@ -19,7 +21,7 @@ router.post('/signin', async (req, res) => {
             }
             const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (!validPassword) {
-                return res.status(401).send({auth: false, token: null});
+                return res.status(402);
             }
             const token = jwt.sign({ id: email }, secret);
             return res.status(200).json({ auth: true, token });
@@ -31,9 +33,18 @@ router.post('/signin', async (req, res) => {
 });
 
 
-router.post('/signupmedical', async (req, res) => {
+router.post('/signupmedical/', async (req, res) => {
     try {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, medical_speciality} = req.body;
+        if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !medical_speciality){
+            return res.status(410);
+        }
+        if(dateValidation(birth_date)){
+            return res.status(411);
+        }
+        if(emailValidation(email)){
+            return res.status(412);
+        }
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
         mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
@@ -77,15 +88,24 @@ router.post('/signupmedical', async (req, res) => {
     }
 });
 
-router.post('/signupuser', async (req, res) => {
+router.post('/signupuser/', async (req, res) => {
     try {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, weight, height, insurance_number, insurance_id} = req.body;
+        if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !weight || !height || !insurance_number || !insurance_id){
+            return res.status(410);
+        }
+        if(dateValidation(birth_date)){
+            return res.status(411);
+        }
+        if(emailValidation(email)){
+            return res.status(412);
+        }
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
         mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
             if (!err) {
                 if(rows[0].id){
-                    return res.status(400).send('Ese email ya esta asociado a otro usuario');
+                    return res.status(401);
                 }else{
 					mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
 					if (!err) {
@@ -98,33 +118,33 @@ router.post('/signupuser', async (req, res) => {
                                         return res.status(200).json({ auth: true, token });
                                     } else {
                                         console.log(err);
-                                        return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                                        return res.status(500);
                                     }
                                 });
                             } else { 
                                 console.log(err);
-                                return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                                return res.status(500);
                             }
                         });
                         } else {
                         console.log(err);
-                        return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                        return res.status(500);
                         }
                     });
                 }
             } else {
                 console.log(err);
-                return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                return res.status(500);
             }
         });
     } catch (e) {
         console.log(e)
-        return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+        return res.status(500);
     }
 });
 
 
-router.get('/getmedicalinfo',verifyTokenMedical, (req,res) =>{
+router.get('/getmedicalinfo/',verifyTokenMedical, (req,res) =>{
     //aca uso un id que me inserto el middleWare y lo uso como req.id
     mysqlConnection.query('SELECT * FROM users WHERE id = ?', [req.id], async (err, rows, fields) => {
         if (!err) {
@@ -153,7 +173,7 @@ router.get('/getmedicalinfo',verifyTokenMedical, (req,res) =>{
 });
 
 
-router.get('/getuserinfo',verifyTokenUser, (req,res) =>{
+router.get('/getuserinfo/',verifyTokenUser, (req,res) =>{
     //aca uso un id que me inserto el middleWare y lo uso como req.id
     mysqlConnection.query('SELECT * FROM users WHERE id = ?', [req.id], async (err, rows, fields) => {
         if (!err) {

@@ -24,8 +24,7 @@ async function verifyTokenMedical(req, res, next) {
                         }else{
                             next();
                         }
-                    }
-                    else {
+                    }else {
                         console.log(err);
                     }
                 });
