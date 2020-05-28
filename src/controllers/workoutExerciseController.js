@@ -25,9 +25,9 @@ router.get('/workoutExercise/:id', (req, res) => {
 });
 
 router.post('/workoutExercise/', (req, res) => {
-    const { workoutId, exerciseId, time } = req.body;
+    const {workout_id, exercise_id, time } = req.body;
     const query = 'INSERT INTO Workout_Exercises(workout_id, exercise_id, time) VALUES (?,?,?)';
-    mysqlConnection.query(query, [workoutId, exerciseId, time], (err, rows, fields) => {
+    mysqlConnection.query(query, [workout_id, exercise_id, time], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Workout exercise saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/workoutExercise/', (req, res) => {
 
 router.put('/workoutExercise/:id', (req, res) => {
     const { id } = req.params;
-    const { workoutId, exerciseId, time } = req.body;
+    const { workout_id, exercise_id, time } = req.body;
     const query = 'UPDATE Workout_Exercises SET workout_id = ?, exercise_id = ?, time = ? WHERE id = ?';
-    mysqlConnection.query(query, [workoutId, exerciseId, time, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [workout_id, exercise_id, time, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Workout exercise updated'});
         } else {
