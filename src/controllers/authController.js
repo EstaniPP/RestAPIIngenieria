@@ -15,14 +15,14 @@ router.post('/signin', async (req, res) => {
         if (!err) {
             user = rows[0];
             if(!user) {
-                return res.status(404).send("El usuario no existe")
+                return res.status(401).send("El usuario no existe")
             }
             const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (!validPassword) {
                 return res.status(401).send({auth: false, token: null});
             }
             const token = jwt.sign({ id: email }, secret);
-            return res.json({ auth: true, token });
+            return res.status(200).json({ auth: true, token });
         }
         else {
             console.log(err);
@@ -36,30 +36,41 @@ router.post('/signupmedical', async (req, res) => {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, medical_speciality} = req.body;
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
-        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+        mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
             if (!err) {
-                mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
-                    if(!err){
-                        mysqlConnection.query('Insert into medical_personnel (user_id) values (?);', [[ rows[0].id]], (err, rows, fields) => {
+                if(rows[0].id){
+                    return res.status(401).send('Ese email ya esta asociado a otro usuario');
+                }else{
+                mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+                    if (!err) {
+                        mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
                             if(!err){
-                                console.log({ status:"El medico ha sido agregado correctamente" });
-                                const token = jwt.sign({ id: email }, secret);
-                                return res.json({ auth: true, token });
-                            } else {
+                                mysqlConnection.query('Insert into medical_personnel (user_id) values (?);', [[ rows[0].id]], (err, rows, fields) => {
+                                    if(!err){
+                                        console.log({ status:"El medico ha sido agregado correctamente" });
+                                        const token = jwt.sign({ id: email }, secret);
+                                        return res.status(200).json({ auth: true, token });
+                                    } else {
+                                        console.log(err);
+                                        return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                                    }
+                                });
+                            } else { 
                                 console.log(err);
                                 return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
                             }
                         });
-                    } else { 
+                        } else {
                         console.log(err);
                         return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
-                    }
-                });
-                } else {
+                        }
+                    });
+                }
+            } else {
                 console.log(err);
                 return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
-                }
-            });
+            }
+        });
     } catch (e) {
         console.log(e)
         return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
@@ -72,32 +83,41 @@ router.post('/signupuser', async (req, res) => {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, weight, height, insurance_number, insurance_id} = req.body;
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
-        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+        mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
             if (!err) {
-                mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
-                    if(!err){
-                        mysqlConnection.query('Insert into Device_Users (weight, height, insurance_number, user_id) values (?)', [[weight, height, insurance_number, rows[0].id]], (err, rows, fields) => {
+                if(rows[0].id){
+                    return res.status(400).send('Ese email ya esta asociado a otro usuario');
+                }else{
+                mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+                    if (!err) {
+                        mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
                             if(!err){
-                                console.log({ status:"El usuario ha sido agregado correctamente" });
-                            } else {
+                                mysqlConnection.query('Insert into Device_Users (weight, height, insurance_number, user_id) values (?)', [[weight, height, insurance_number, rows[0].id]], (err, rows, fields) => {
+                                    if(!err){
+                                        console.log({ status:"El usuario ha sido agregado correctamente" });
+                                        const token = jwt.sign({ id: email }, secret);
+                                        return res.status(200).json({ auth: true, token });
+                                    } else {
+                                        console.log(err);
+                                        return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
+                                    }
+                                });
+                            } else { 
                                 console.log(err);
                                 return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
                             }
                         });
-                    } else { 
+                        } else {
                         console.log(err);
                         return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
-                    }
-                });
-                } else {
+                        }
+                    });
+                }
+            } else {
                 console.log(err);
                 return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
-                }
-            });
-        // Create a Token
-        const token = jwt.sign({ id: email }, secret);
-        res.json({ auth: true, token });
-
+            }
+        });
     } catch (e) {
         console.log(e)
         return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
@@ -111,13 +131,13 @@ router.get('/getmedicalinfo',verifyTokenMedical, (req,res) =>{
         if (!err) {
             user = rows[0];
             if(!user) {
-                return res.status(404).send("El usuario no existe")
+                return res.status(401).send("El usuario no existe")
             }else{
                 let user = rows[0];
                 mysqlConnection.query('SELECT * FROM medical_personnel WHERE user_id = ?', [req.id], async (err, rows, fields) => {
                     if (!err) {
                         if(!user) {
-                            return res.status(404).send("El usuario no es medico")
+                            return res.status(401).send("El usuario no es medico")
                         }else{
                             const medicalinfo = await rows[0];
                             user.medical_speciality_id = medicalinfo.medical_speciality_id;
@@ -140,20 +160,20 @@ router.get('/getuserinfo',verifyTokenUser, (req,res) =>{
         if (!err) {
             user = rows[0];
             if(!user) {
-                return res.status(404).send("El usuario no existe")
+                return res.status(401).send("El usuario no existe")
             }else{
                 let user = rows[0];
                 mysqlConnection.query('SELECT * FROM device_users WHERE user_id = ?', [req.id], async (err, rows, fields) => {
                     if (!err) {
                         if(!user) {
-                            return res.status(404).send("El usuario no es medico")
+                            return res.status(401).send("El usuario no es medico")
                         }else{
                             const userinfo = await rows[0];
                             user.weight = userinfo.weight;
                             user.height = userinfo.height;
                             user.insurance_id = userinfo.insurance_id;
                             user.insurance_number = userinfo.insurance_number;
-                            return res.json(user)
+                            return res.status(200).json(user)
                         }
                     }
                     else {

@@ -13,14 +13,14 @@ async function verifyTokenUser(req, res, next) {
             user = rows[0];
             req.id = rows[0].id;
             if(!user) {
-                return res.status(404).send("El usuario no existe")
+                return res.status(401).send("El usuario no existe")
             }else{
                 const user_id = rows[0].id;
                 mysqlConnection.query('SELECT * FROM device_users WHERE user_id = ?', [user_id], async (err, rows, fields) => {
                     if (!err) {
                         user = rows[0];
                         if(!user) {
-                            return res.status(404).send("El usuario no es medico")
+                            return res.status(403).send("El usuario no es medico")
                         }else{
                             next();
                         }
