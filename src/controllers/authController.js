@@ -11,7 +11,7 @@ router.post('/signin', async (req, res) => {
     const email = req.body.email;
     console.log(email);
     let user; 
-    mysqlConnection.query('SELECT * FROM users WHERE email = ?', [email], async (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM users WHERE email = ?', email, async (err, rows, fields) => {
         if (!err) {
             user = rows[0];
             if(!user) {
@@ -36,11 +36,11 @@ router.post('/signupmedical', async (req, res) => {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, medical_speciality} = req.body;
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
-        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type_id) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address, city_id, document_type]], (err, rows, fields) => {
             if (!err) {
                 mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
                     if(!err){
-                        mysqlConnection.query('Insert into medical_personnel (user_id) values (?);', [[ rows[0].id]], (err, rows, fields) => {
+                        mysqlConnection.query('Insert into medical_personnel (id, user_id, medical_speciality_id) values (?,?,?);', [null, rows[0].id, medical_speciality], (err, rows, fields) => {
                             if(!err){
                                 console.log({ status:"El medico ha sido agregado correctamente" });
                                 const token = jwt.sign({ id: email }, secret);
@@ -66,17 +66,20 @@ router.post('/signupmedical', async (req, res) => {
     }
 });
 
+/*
+    retocado por mi.......
+*/
 
 router.post('/signupuser', async (req, res) => {
     try {
         const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, weight, height, insurance_number, insurance_id} = req.body;
         const salt = await bcrypt.genSalt(10);
         const newPassword = await bcrypt.hash(password, salt);
-        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address]], (err, rows, fields) => {
+        mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
             if (!err) {
                 mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
                     if(!err){
-                        mysqlConnection.query('Insert into Device_Users (weight, height, insurance_number, user_id) values (?)', [[weight, height, insurance_number, rows[0].id]], (err, rows, fields) => {
+                        mysqlConnection.query('Insert into Device_Users (weight, height, insurance_number, insurance_id, user_id) values (?)', [[weight, height, insurance_number, insurance_id, rows[0].id]], (err, rows, fields) => {
                             if(!err){
                                 console.log({ status:"El usuario ha sido agregado correctamente" });
                             } else {

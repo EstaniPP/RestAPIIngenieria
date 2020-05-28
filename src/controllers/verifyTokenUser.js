@@ -8,33 +8,39 @@ async function verifyTokenUser(req, res, next) {
         return res.status(401).send({ auth: false, message: 'No ingreso ningun token' });
     }
     const decoded = await jwt.verify(token, secret);
-    mysqlConnection.query('SELECT * FROM users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
-        if (!err) {
-            user = rows[0];
-            req.id = rows[0].id;
-            if(!user) {
-                return res.status(404).send("El usuario no existe")
-            }else{
-                const user_id = rows[0].id;
-                mysqlConnection.query('SELECT * FROM device_users WHERE user_id = ?', [user_id], async (err, rows, fields) => {
-                    if (!err) {
-                        user = rows[0];
-                        if(!user) {
-                            return res.status(404).send("El usuario no es medico")
-                        }else{
-                            next();
+    try{
+        mysqlConnection.query('SELECT * FROM users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
+            if (!err) {
+                user = rows[0];
+                req.id = rows[0].id;
+                if(!user) {
+                    return res.status(404).send("El usuario no existe")
+                }else{
+                    const user_id = rows[0].id;
+                    mysqlConnection.query('SELECT * FROM device_users WHERE user_id = ?', [user_id], async (err, rows, fields) => {
+                        if (!err) {
+                            user = rows[0];
+                            if(!user) {
+                                return res.status(404).send("El usuario no es medico")
+                            }else{
+                                next();
+                            }
                         }
-                    }
-                    else {
-                        console.log(err);
-                    }
-                });
+                        else {
+                            console.log(err);
+                        }
+                    });
+                }
+            }else {
+                console.log(err);
             }
-        }
-        else {
-            console.log(err);
-        }
-    });
+        }); 
+    }catch(e){
+        return res.status(500).json({
+            error: 500,
+            msg: "Error interno. Vuelva a intentarlo"
+        });
+    }
 }
 
 module.exports = verifyTokenUser;
