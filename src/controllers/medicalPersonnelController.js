@@ -25,9 +25,9 @@ router.get('/medicalPersonnel/:id', (req, res) => {
 });
 
 router.post('/medicalPersonnel/', (req, res) => {
-    const { userId, medicalSpecialityId } = req.body;
+    const { user_id, medical_speciality_id } = req.body;
     const query = 'INSERT INTO Medical_Personnel(user_id, medical_speciality_id) VALUES (?,?)';
-    mysqlConnection.query(query, [userId, medicalSpecialityId], (err, rows, fields) => {
+    mysqlConnection.query(query, [user_id, medical_speciality_id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Medical personnel saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/medicalPersonnel/', (req, res) => {
 
 router.put('/medicalPersonnel/:id', (req, res) => {
     const { id } = req.params;
-    const { userId, medicalSpecialityId } = req.body;
+    const { user_id, medical_speciality_id } = req.body;
     const query = 'UPDATE Medical_Personnel SET user_id = ?, medical_speciality_id = ? WHERE id = ?';
-    mysqlConnection.query(query, [userId, medicalSpecialityId, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [user_id, medical_speciality_id, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Medical personnel updated'});
         } else {

@@ -25,9 +25,9 @@ router.get('/heartRateSignal/:id', (req, res) => {
 });
 
 router.post('/heartRateSignal/', (req, res) => {
-    const { workoutReportId, time, value } = req.body;
+    const { workout_report_id, time, value } = req.body;
     const query = 'INSERT INTO Heart_Rate_Signals(workout_report_id, time, value) VALUES (?,?,?)';
-    mysqlConnection.query(query, [workoutReportId, time, value], (err, rows, fields) => {
+    mysqlConnection.query(query, [workout_report_id, time, value], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Heart rate signal saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/heartRateSignal/', (req, res) => {
 
 router.put('/heartRateSignal/:id', (req, res) => {
     const { id } = req.params;
-    const { workoutReportId, time, value } = req.body;
+    const { workout_report_id, time, value } = req.body;
     const query = 'UPDATE Heart_Rate_Signals SET workout_report_id = ?, time = ?, value = ? WHERE id = ?';
-    mysqlConnection.query(query, [workoutReportId, time, value, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [workout_report_id, time, value, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Heart rate signal updated'});
         } else {

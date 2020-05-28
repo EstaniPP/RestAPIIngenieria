@@ -25,9 +25,9 @@ router.get('/user/:id', (req, res) => {
 });
 
 router.post('/user/', (req, res) => {
-    const { name, lastName, birthDate, gender, documentTypeId, documentNumber, email, password, cityId, address } = req.body;
+    const { name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address } = req.body;
     const query = 'INSERT INTO Users(name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?,?,?,?,?,?,?,?,?,?)';
-    mysqlConnection.query(query, [name, lastName, birthDate, gender, documentTypeId, documentNumber, email, password, cityId, address], (err, rows, fields) => {
+    mysqlConnection.query(query, [name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'User saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/user/', (req, res) => {
 
 router.put('/user/:id', (req, res) => {
     const { id } = req.params;
-    const { name, lastName, birthDate, gender, documentTypeId, documentNumber, email, password, cityId, address } = req.body;
+    const { name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address } = req.body;
     const query = 'UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_type_id = ?, document_number = ?, email = ?, password = ?, city_id = ?, address = ? WHERE id = ?';
-    mysqlConnection.query(query, [name, lastName, birthDate, gender, documentTypeId, documentNumber, email, password, cityId, address, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'User updated'});
         } else {

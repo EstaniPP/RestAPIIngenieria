@@ -25,9 +25,9 @@ router.get('/emergencyContact/:id', (req, res) => {
 });
 
 router.post('/emergencyContact/', (req, res) => {
-    const { deviceUserId, name, email, relation } = req.body;
+    const { device_user_id, name, email, relation } = req.body;
     const query = 'INSERT INTO Emergency_Contacts(device_user_id, name, email, relation) VALUES (?,?,?,?)';
-    mysqlConnection.query(query, [deviceUserId, name, email, relation], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, name, email, relation], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Emergency contact saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/emergencyContact/', (req, res) => {
 
 router.put('/emergencyContact/:id', (req, res) => {
     const { id } = req.params;
-    const { deviceUserId, name, email, relation } = req.body;
+    const { device_user_id, name, email, relation } = req.body;
     const query = 'UPDATE Emergency_Contacts SET device_user_id = ?, name = ?, email = ?, relation = ? WHERE id = ?';
-    mysqlConnection.query(query, [deviceUserId, name, email, relation, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, name, email, relation, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Emergency contact updated'});
         } else {

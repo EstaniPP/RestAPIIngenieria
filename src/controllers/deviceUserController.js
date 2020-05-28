@@ -25,9 +25,9 @@ router.get('/deviceUser/:id', (req, res) => {
 });
 
 router.post('/deviceUser/', (req, res) => {
-    const { userId, weight, height, insuranceId, insuranceNumber } = req.body;
+    const { user_id, weight, height, insurance_id, insurance_number } = req.body;
     const query = 'INSERT INTO Device_Users(user_id, weight, height, insurance_id, insurance_number) VALUES (?,?,?,?,?)';
-    mysqlConnection.query(query, [userId, weight, height, insuranceId, insuranceNumber], (err, rows, fields) => {
+    mysqlConnection.query(query, [user_id, weight, height, insurance_id, insurance_number], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Device user saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/deviceUser/', (req, res) => {
 
 router.put('/deviceUser/:id', (req, res) => {
     const { id } = req.params;
-    const { userId, weight, height, insuranceId, insuranceNumber } = req.body;
+    const { user_id, weight, height, insurance_id, insurance_number } = req.body;
     const query = 'UPDATE Device_Users SET user_id = ?, weight = ?, height = ?, insurance_id = ?, insurance_number = ? WHERE id = ?';
-    mysqlConnection.query(query, [userId, weight, height, insuranceId, insuranceNumber, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [user_id, weight, height, insurance_id, insurance_number, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Device user updated'});
         } else {
