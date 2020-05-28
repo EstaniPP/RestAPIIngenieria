@@ -24,14 +24,12 @@ async function verifyTokenUser(req, res, next) {
                         }else{
                             next();
                         }
-                    }
-                    else {
+                    }else {
                         console.log(err);
                     }
                 });
             }
-        }
-        else {
+        }else {
             console.log(err);
         }
     });

@@ -25,9 +25,9 @@ router.get('/state/:id', (req, res) => {
 });
 
 router.post('/state/', (req, res) => {
-    const { name, countryId } = req.body;
+    const { name, country_id } = req.body;
     const query = 'INSERT INTO States(name, country_id) VALUES (?,?)';
-    mysqlConnection.query(query, [name, countryId], (err, rows, fields) => {
+    mysqlConnection.query(query, [name, country_id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'State saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/state/', (req, res) => {
 
 router.put('/state/:id', (req, res) => {
     const { id } = req.params;
-    const { name, countryId } = req.body;
+    const { name, country_id } = req.body;
     const query = 'UPDATE States SET name = ?, country_id = ? WHERE id = ?';
-    mysqlConnection.query(query, [name, countryId, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [name, country_id, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'State updated'});
         } else {

@@ -25,9 +25,9 @@ router.get('/userDisease/:id', (req, res) => {
 });
 
 router.post('/userDisease/', (req, res) => {
-    const { deviceUserId, diseaseId } = req.body;
+    const { device_user_id, disease_id } = req.body;
     const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
-    mysqlConnection.query(query, [deviceUserId, diseaseId], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, disease_id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'User disease saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/userDisease/', (req, res) => {
 
 router.put('/userDisease/:id', (req, res) => {
     const { id } = req.params;
-    const { deviceUserId, diseaseId } = req.body;
+    const { device_user_id, disease_id } = req.body;
     const query = 'UPDATE User_Diseases SET device_user_id = ?, disease_id = ? WHERE id = ?';
-    mysqlConnection.query(query, [deviceUserId, diseaseId, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, disease_id, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'User disease updated'});
         } else {
