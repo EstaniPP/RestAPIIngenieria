@@ -25,9 +25,9 @@ router.get('/workout/:id', (req, res) => {
 });
 
 router.post('/workout/', (req, res) => {
-    const { device_user_id, medical_personnel_id, done, creation_date, difficulty, rating } = req.body;
-    const query = 'INSERT INTO Workouts(device_user_id, medical_personnel_id, done, creation_date, difficulty, rating) VALUES (?,?,?,?,?,?)';
-    mysqlConnection.query(query, [device_user_id, medical_personnel_id, done, creation_date, difficulty, rating], (err, rows, fields) => {
+    const { device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating } = req.body;
+    const query = 'INSERT INTO Workouts(device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating) VALUES (?,?,?,?,?,?,?,?)';
+    mysqlConnection.query(query, [device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Workout saved'});
         } else {
@@ -38,9 +38,9 @@ router.post('/workout/', (req, res) => {
 
 router.put('/workout/:id', (req, res) => {
     const { id } = req.params;
-    const { device_user_id, medical_personnel_id, done, creation_date, difficulty, rating } = req.body;
-    const query = 'UPDATE Workouts SET device_user_id = ?, medical_personnel_id = ?, done = ?, creation_date = ?, difficulty = ?, rating = ? WHERE id = ?';
-    mysqlConnection.query(query, [device_user_id, medical_personnel_id, done, creation_date, difficulty, rating, id], (err, rows, fields) => {
+    const { device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating } = req.body;
+    const query = 'UPDATE Workouts SET device_user_id = ?, medical_personnel_id = ?, name = ?, creation_date = ?, difficulty = ?, price = ?, done = ?, rating = ? WHERE id = ?';
+    mysqlConnection.query(query, [device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating, id], (err, rows, fields) => {
         if(!err){
             res.json({Status: 'Workout updated'});
         } else {
