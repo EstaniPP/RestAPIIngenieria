@@ -49,15 +49,5 @@ router.put('/user/:id', (req, res) => {
     });
 });
 
-router.delete('/user/:id', (req, res) => {
-    const { id } = req.params;
-    mysqlConnection.query('DELETE FROM Users WHERE id = ?', [id], (err, rows, fields) => {
-        if(!err){
-            res.json({Status: 'User deleted'});
-        } else {
-            console.log(err);
-        }
-    });
-});
 
 module.exports = router;

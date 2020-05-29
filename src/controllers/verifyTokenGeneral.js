@@ -13,7 +13,7 @@ async function verifyTokenGeneral(req, res, next) {
             user = rows[0];
             req.id = rows[0].id;
             if(!user) {
-                return res.status(401).send("El usuario no existe")
+                return res.status(402).send("Token invalido")
             }else{
                 next();
             }

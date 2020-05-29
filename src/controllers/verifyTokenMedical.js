@@ -5,7 +5,7 @@ const secret = "mysecretpassword";
 async function verifyTokenMedical(req, res, next) {
     const token = req.headers['x-access-token'];
     if (!token) {
-        return res.status(401).send({ auth: false, message: 'No ingreso ningun token' });
+        return res.status(401)
     }
     const decoded = await jwt.verify(token, secret);
     mysqlConnection.query('SELECT * FROM users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
@@ -13,14 +13,14 @@ async function verifyTokenMedical(req, res, next) {
             user = rows[0];
             req.id = rows[0].id;
             if(!user) {
-                return res.status(401).send("El usuario no existe")
+                return res.status(402)
             }else{
                 const user_id = rows[0].id;
                 mysqlConnection.query('SELECT * FROM medical_personnel WHERE user_id = ?', [user_id], async (err, rows, fields) => {
                     if (!err) {
                         user = rows[0];
                         if(!user) {
-                            return res.status(403).send("El usuario no es medico")
+                            return res.status(403)
                         }else{
                             next();
                         }
