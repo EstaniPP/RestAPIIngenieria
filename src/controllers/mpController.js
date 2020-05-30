@@ -20,8 +20,6 @@ const verifyTokenUser = require('./verifyTokenUser');
         Body format:
             - workoutList: []
 */
-
-
 router.post('/mercadop/', verifyTokenUser, (req, res) => {
     // workout list
     const workoutList = req.body.workoutList;
