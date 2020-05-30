@@ -24,6 +24,21 @@ router.get('/deviceUser/:id', (req, res) => {
     });
 });
 
+router.get('/deviceUser/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'user_id' || fk == 'insurance_id'){
+        mysqlConnection.query('SELECT * FROM Device_Users where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/deviceUser/', (req, res) => {
     const { user_id, weight, height, insurance_id, insurance_number, heart_rate_signal_threshold } = req.body;
     const query = 'INSERT INTO Device_Users(user_id, weight, height, insurance_id, insurance_number, heart_rate_signal_threshold) VALUES (?,?,?,?,?,?)';

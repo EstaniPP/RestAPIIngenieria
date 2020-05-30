@@ -24,6 +24,21 @@ router.get('/medicalPersonnel/:id', (req, res) => {
     });
 });
 
+router.get('/medicalPersonnel/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'user_id' || fk == 'medical_speciality_id'){
+        mysqlConnection.query('SELECT * FROM Medical_Personnel where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/medicalPersonnel/', (req, res) => {
     const { user_id, medical_speciality_id } = req.body;
     const query = 'INSERT INTO Medical_Personnel(user_id, medical_speciality_id) VALUES (?,?)';

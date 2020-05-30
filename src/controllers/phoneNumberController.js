@@ -24,6 +24,21 @@ router.get('/phoneNumber/:id', (req, res) => {
     });
 });
 
+router.get('/phoneNumber/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'user_id'){
+        mysqlConnection.query('SELECT * FROM Phone_Numbers where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/phoneNumber/', (req, res) => {
     const { user_id, number } = req.body;
     const query = 'INSERT INTO Phone_Numbers(user_id, number) VALUES (?,?)';

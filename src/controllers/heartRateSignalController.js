@@ -24,6 +24,21 @@ router.get('/heartRateSignal/:id', (req, res) => {
     });
 });
 
+router.get('/heartRateSignal/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'workout_report_id'){
+        mysqlConnection.query('SELECT * FROM Heart_Rate_Signals where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/heartRateSignal/', (req, res) => {
     const { workout_report_id, time, value } = req.body;
     const query = 'INSERT INTO Heart_Rate_Signals(workout_report_id, time, value) VALUES (?,?,?)';

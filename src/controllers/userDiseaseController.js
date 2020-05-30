@@ -24,6 +24,21 @@ router.get('/userDisease/:id', (req, res) => {
     });
 });
 
+router.get('/userDisease/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'device_user_id' || fk == 'disease_id'){
+        mysqlConnection.query('SELECT * FROM User_Diseases where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/userDisease/', (req, res) => {
     const { device_user_id, disease_id } = req.body;
     const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';

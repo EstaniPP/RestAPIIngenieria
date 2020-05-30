@@ -24,6 +24,21 @@ router.get('/workout/:id', (req, res) => {
     });
 });
 
+router.get('/workout/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'device_user_id' || fk == 'medical_personnel_id'){
+        mysqlConnection.query('SELECT * FROM Workouts where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/workout/', (req, res) => {
     const { device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating } = req.body;
     const query = 'INSERT INTO Workouts(device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating) VALUES (?,?,?,?,?,?,?,?)';

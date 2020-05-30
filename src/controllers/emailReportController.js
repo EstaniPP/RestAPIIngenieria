@@ -24,6 +24,21 @@ router.get('/emailReport/:id', (req, res) => {
     });
 });
 
+router.get('/emailReport/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'device_user_id' || fk == 'emergency_contact_id'){
+        mysqlConnection.query('SELECT * FROM Email_Reports where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/emailReport/', (req, res) => {
     const { device_user_id, report_date, emergency_contact_id } = req.body;
     const query = 'INSERT INTO Email_Reports(device_user_id, report_date, emergency_contact_id) VALUES (?,?,?)';

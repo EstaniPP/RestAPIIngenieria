@@ -24,6 +24,21 @@ router.get('/emergencyContact/:id', (req, res) => {
     });
 });
 
+router.get('/emergencyContact/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'device_user_id'){
+        mysqlConnection.query('SELECT * FROM Emergency_Contacts where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/emergencyContact/', (req, res) => {
     const { device_user_id, name, email, relation } = req.body;
     const query = 'INSERT INTO Emergency_Contacts(device_user_id, name, email, relation) VALUES (?,?,?,?)';

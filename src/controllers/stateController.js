@@ -24,6 +24,21 @@ router.get('/state/:id', (req, res) => {
     });
 });
 
+router.get('/state/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'country_id'){
+        mysqlConnection.query('SELECT * FROM States where ? = ?', [fk, id], (err, rows, fields) => {
+            if(!err){
+                res.json(rows);
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        console.log('Not valid FK.')
+    }
+});
+
 router.post('/state/', (req, res) => {
     const { name, country_id } = req.body;
     const query = 'INSERT INTO States(name, country_id) VALUES (?,?)';
