@@ -3,35 +3,38 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 
-router.get('/exercise/', (req, res) => {
-    mysqlConnection.query('SELECT * FROM Exercises', (err, rows, fields) => {
-        if(!err){
-            res.json(rows);
-        } else {
-            console.log(err);
-        }
-    });
-});
-
 router.get('/exercise/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('SELECT * FROM Exercises WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json(rows[0]);
+            return res.status(200).json(rows[0]);
         } else {
-            console.log(err);
+            return res.status(500).send(err);
+        }
+    });
+});
+
+router.get('/exercise/', (req, res) => {
+    mysqlConnection.query('SELECT * FROM Exercises', (err, rows, fields) => {
+        if(!err){
+            return res.status(200).json(rows);
+        } else {
+            return res.status(500).send(err);
         }
     });
 });
 
 router.post('/exercise/', (req, res) => {
     const { description, path } = req.body;
+    if(!description){
+        return res.status(411).send();
+    }
     const query = 'INSERT INTO Exercises(description, path) VALUES (?,?)';
     mysqlConnection.query(query, [description, path], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'Exercise saved'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -39,12 +42,15 @@ router.post('/exercise/', (req, res) => {
 router.put('/exercise/:id', (req, res) => {
     const { id } = req.params;
     const { description, path } = req.body;
+    if(!description){
+        return res.status(411).send();
+    }
     const query = 'UPDATE Exercises SET description = ?, path = ? WHERE id = ?';
     mysqlConnection.query(query, [description, path, id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'Exercise updated'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -53,9 +59,9 @@ router.delete('/exercise/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('DELETE FROM Exercises WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'Exercise deleted'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });

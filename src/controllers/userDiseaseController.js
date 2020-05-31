@@ -3,50 +3,61 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 
-router.get('/userDisease/', (req, res) => {
-    mysqlConnection.query('SELECT * FROM User_Diseases', (err, rows, fields) => {
-        if(!err){
-            res.json(rows);
-        } else {
-            console.log(err);
-        }
-    });
+router.get('/userDisease/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'device_user_id'){
+        mysqlConnection.query('SELECT * FROM User_Diseases WHERE device_user_id = ?', [id], (err, rows, fields) => {
+            if(!err){
+                return res.status(200).json(rows);
+            } else {
+                return res.status(500).send(err);
+            }
+        });
+    } else if(fk == 'disease_id'){
+        mysqlConnection.query('SELECT * FROM User_Diseases WHERE disease_id = ?', [id], (err, rows, fields) => {
+            if(!err){
+                return res.status(200).json(rows);
+            } else {
+                return res.status(500).send(err);
+            }
+        });
+    } else {
+        return res.status(416).send();
+    }
 });
 
 router.get('/userDisease/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('SELECT * FROM User_Diseases WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json(rows[0]);
+            return res.status(200).json(rows[0]);
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
 
-router.get('/userDisease/:fk&:id', (req, res) => {
-    const { fk, id } = req.params;
-    if(fk == 'device_user_id' || fk == 'disease_id'){
-        mysqlConnection.query('SELECT * FROM User_Diseases where ? = ?', [fk, id], (err, rows, fields) => {
-            if(!err){
-                res.json(rows);
-            } else {
-                console.log(err);
-            }
-        });
-    } else {
-        console.log('Not valid FK.')
-    }
+router.get('/userDisease/', (req, res) => {
+    mysqlConnection.query('SELECT * FROM User_Diseases', (err, rows, fields) => {
+        if(!err){
+            return res.status(200).json(rows);
+        } else {
+            return res.status(500).send(err);
+        }
+    });
 });
 
 router.post('/userDisease/', (req, res) => {
     const { device_user_id, disease_id } = req.body;
+    if(!device_user_id || !disease_id){
+        return res.status(411).send();
+    }
     const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
     mysqlConnection.query(query, [device_user_id, disease_id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'User disease saved'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -54,12 +65,15 @@ router.post('/userDisease/', (req, res) => {
 router.put('/userDisease/:id', (req, res) => {
     const { id } = req.params;
     const { device_user_id, disease_id } = req.body;
+    if(!device_user_id || !disease_id){
+        return res.status(411).send();
+    }
     const query = 'UPDATE User_Diseases SET device_user_id = ?, disease_id = ? WHERE id = ?';
     mysqlConnection.query(query, [device_user_id, disease_id, id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'User disease updated'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -68,9 +82,9 @@ router.delete('/userDisease/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('DELETE FROM User_Diseases WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'User disease deleted'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });

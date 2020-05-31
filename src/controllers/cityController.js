@@ -3,50 +3,53 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 
-router.get('/city/', (req, res) => {
-    mysqlConnection.query('SELECT * FROM Cities', (err, rows, fields) => {
-        if(!err){
-            res.json(rows);
-        } else {
-            console.log(err);
-        }
-    });
+router.get('/city/:fk&:id', (req, res) => {
+    const { fk, id } = req.params;
+    if(fk == 'state_id'){
+        mysqlConnection.query('SELECT * FROM Cities WHERE state_id = ?', [id], (err, rows, fields) => {
+            if(!err){
+                return res.status(200).json(rows);
+            } else {
+                return res.status(500).send(err);
+            }
+        });
+    } else {
+        return res.status(416).send();
+    }
 });
 
 router.get('/city/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('SELECT * FROM Cities WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json(rows[0]);
+            return res.status(200).json(rows[0]);
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
 
-router.get('/city/:fk&:id', (req, res) => {
-    const { fk, id } = req.params;
-    if(fk == 'state_id'){
-        mysqlConnection.query('SELECT * FROM Cities where ? = ?', [fk, id], (err, rows, fields) => {
-            if(!err){
-                res.json(rows);
-            } else {
-                console.log(err);
-            }
-        });
-    } else {
-        console.log('Not valid FK.')
-    }
+router.get('/city/', (req, res) => {
+    mysqlConnection.query('SELECT * FROM Cities', (err, rows, fields) => {
+        if(!err){
+            return res.status(200).json(rows);
+        } else {
+            return res.status(500).send(err);
+        }
+    });
 });
 
 router.post('/city/', (req, res) => {
     const { name, state_id } = req.body;
+    if(!name || !state_id){
+        return res.status(411).send();
+    }
     const query = 'INSERT INTO Cities(name, state_id) VALUES (?,?)';
     mysqlConnection.query(query, [name, state_id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'City saved'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -54,12 +57,15 @@ router.post('/city/', (req, res) => {
 router.put('/city/:id', (req, res) => {
     const { id } = req.params;
     const { name, state_id } = req.body;
+    if(!name || !state_id){
+        return res.status(411).send();
+    }
     const query = 'UPDATE Cities SET name = ?, state_id = ? WHERE id = ?';
     mysqlConnection.query(query, [name, state_id, id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'City updated'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
@@ -68,9 +74,9 @@ router.delete('/city/:id', (req, res) => {
     const { id } = req.params;
     mysqlConnection.query('DELETE FROM Cities WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
-            res.json({Status: 'City deleted'});
+            return res.status(200).send();
         } else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 });
