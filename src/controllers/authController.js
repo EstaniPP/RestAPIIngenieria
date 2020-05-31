@@ -9,7 +9,7 @@ const dateValidation = require('../functionalMethods/dateValidation');
 
 router.post('/signin/', async (req, res) => {
     if(!req.body.email || !req.body.password){
-        return res.status(410);
+        return res.status(410).send();
     }
     const email = req.body.email;
     let user; 
@@ -21,7 +21,7 @@ router.post('/signin/', async (req, res) => {
             }
             const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (!validPassword) {
-                return res.status(412);
+                return res.status(412).send();
             }
             const token = jwt.sign({ id: email }, secret);
             return res.status(200).json({ auth: true, token });
@@ -36,13 +36,13 @@ router.post('/signin/', async (req, res) => {
 router.post('/signupmedical/', async (req, res) => {
     const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, medical_speciality} = req.body;
     if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !medical_speciality){
-        return res.status(410);
+        return res.status(410).send();
     }
     if(dateValidation(birth_date)){
-        return res.status(411);
+        return res.status(411).send();
     }
     if(emailValidation(email)){
-        return res.status(412);
+        return res.status(412).send();
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
@@ -62,23 +62,23 @@ router.post('/signupmedical/', async (req, res) => {
                                     return res.status(200).json({ auth: true, token });
                                 } else {
                                     console.log(err);
-                                    return res.status(500);
+                                    return res.status(500).send(err);
                                 }
                             });
                         } else { 
                             console.log(err);
-                            return res.status(500);
+                            return res.status(500).send(err);
                         }
                     });
                     } else {
                     console.log(err);
-                    return res.status(500);
+                    return res.status(500).send(err);
                     }
                 });
             }
         } else {
             console.log(err);
-            return res.status(500);
+            return res.status(500).send(err);
         }
     });
 });
@@ -86,20 +86,21 @@ router.post('/signupmedical/', async (req, res) => {
 router.post('/signupuser/', async (req, res) => {
     const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, weight, height, insurance_number, insurance_id} = req.body;
     if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !weight || !height || !insurance_number || !insurance_id){
-        return res.status(410);
+        return res.status(410).send();
     }
-    if(dateValidation(birth_date)){
-        return res.status(411);
+    if(!dateValidation(birth_date)){
+        console.log(birth_date);
+        return res.status(411).send();
     }
-    if(emailValidation(email)){
-        return res.status(412);
+    if(!emailValidation(email)){
+        return res.status(412).send();
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
     mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
         if (!err) {
-            if(rows[0].id){
-                return res.status(413);
+            if(rows[0]){
+                return res.status(413).send();
             }else{
                 mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
                 if (!err) {
@@ -112,23 +113,22 @@ router.post('/signupuser/', async (req, res) => {
                                     return res.status(200).json({ auth: true, token });
                                 } else {
                                     console.log(err);
-                                    return res.status(500);
+                                    return res.status(500).send(err);
                                 }
                             });
-                        } else { 
-                            console.log(err);
-                            return res.status(500);
+                        } else {
+                            return res.status(500).send(err);
                         }
                     });
                     } else {
                     console.log(err);
-                    return res.status(500);
+                    return res.status(500).send(err);
                     }
                 });
             }
         } else {
             console.log(err);
-            return res.status(500);
+            return res.status(500).send(err);
         }
     });
 });

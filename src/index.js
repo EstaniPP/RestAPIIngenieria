@@ -13,6 +13,8 @@ app.use(express.json());
 // Routes
 //LogIn y registrarse
 app.use(require('./controllers/authController'));
+//Controllers generales
+app.use(require('./controllers/usersJoinsController'));
 // MercadoPago services
 app.use(require('./controllers/mpController'));
 // MercadoPago services

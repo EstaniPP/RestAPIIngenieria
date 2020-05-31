@@ -19,7 +19,7 @@ async function verifyTokenGeneral(req, res, next) {
             }
         }
         else {
-            console.log(err);
+            return res.status(500).send(err);
         }
     });
 }
