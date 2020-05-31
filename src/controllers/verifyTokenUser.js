@@ -7,7 +7,7 @@ async function verifyTokenUser(req, res, next) {
     if (!token) {
         return res.status(401).send();
     }
-    const decoded = await jwt.verify(token, secret);
+    const decoded = await jwt.verify(token, secret, function(err){ return res.status(405).send(); });
     mysqlConnection.query('SELECT * FROM users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
         if (!err) {
             user = rows[0];

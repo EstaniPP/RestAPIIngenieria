@@ -87,7 +87,7 @@ router.put('/userinfo/', verifyTokenUser, async (req,res) => {
             }else{
                 mysqlConnection.query('UPDATE users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_type_id = ?, document_number = ?, email = ?, password = ?, city_id = ?, address = ?  where id = ? ', [name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address,req.id], (err, rows, fields) => {
                     if(!err){
-                            mysqlConnection.query('UPDATE Device_Users SET weight = ?, height = ?, insurance_number = ?, insurance_id = ?, user_id = ? WHERE id = ?', [weight, height, insurance_number, insurance_id, req.id, req.id], (err, rows, fields) => {
+                            mysqlConnection.query('UPDATE device_Users SET weight = ?, height = ?, insurance_number = ?, insurance_id = ?, user_id = ? WHERE id = ?', [weight, height, insurance_number, insurance_id, req.id, req.id], (err, rows, fields) => {
                             if(!err){
                                 return res.status(200).send();
                             } else {
