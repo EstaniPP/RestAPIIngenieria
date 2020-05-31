@@ -1,14 +1,11 @@
 const express = require('express');
 const app = express();
-const validateEmail = require('./functionalMethods/emailValidation');
 
 // Settings
 app.set('port',process.env.PORT || 3000);
 
 // Middlewares
 app.use(express.json());
-
-
 
 // Routes
 //LogIn y registrarse
