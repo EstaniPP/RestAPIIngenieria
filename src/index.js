@@ -12,6 +12,25 @@ app.use(express.json());
 app.use(require('./controllers/authController'));
 //Controllers generales
 app.use(require('./controllers/usersJoinsController'));
+app.use(require('./controllers/cityController'));
+app.use(require('./controllers/countryController'));
+//app.use(require('./controllers/deviceUserController'));
+app.use(require('./controllers/diseaseController'));
+app.use(require('./controllers/documentTypeController'));
+app.use(require('./controllers/emailReportController'));
+app.use(require('./controllers/emergencyContactController'));
+app.use(require('./controllers/exerciseController'));
+app.use(require('./controllers/heartRateSignalController'));
+app.use(require('./controllers/insuranceController'));
+//app.use(require('./controllers/medicalPersonnelController'));
+app.use(require('./controllers/medicalSpecialityController'));
+app.use(require('./controllers/phoneNumberController'));
+app.use(require('./controllers/stateController'));
+//app.use(require('./controllers/userController'));
+app.use(require('./controllers/userDiseaseController'));
+app.use(require('./controllers/workoutController'));
+app.use(require('./controllers/workoutExerciseController'));
+app.use(require('./controllers/workoutReportController'));
 // MercadoPago services
 app.use(require('./controllers/mpController'));
 // MercadoPago services

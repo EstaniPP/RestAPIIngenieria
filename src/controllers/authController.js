@@ -9,7 +9,7 @@ const dateValidation = require('../functionalMethods/dateValidation');
 
 router.post('/signin/', async (req, res) => {
     if(!req.body.email || !req.body.password){
-        return res.status(410).send();
+        return res.status(411).send();
     }
     const email = req.body.email;
     let user; 
@@ -17,17 +17,17 @@ router.post('/signin/', async (req, res) => {
         if (!err) {
             user = rows[0];
             if(!user) {
-                return res.status(411).send("El usuario no existe")
+                return res.status(406).send("El usuario no existe")
             }
             const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (!validPassword) {
-                return res.status(412).send();
+                return res.status(407).send();
             }
             const token = jwt.sign({ id: email }, secret);
             return res.status(200).json({ auth: true, token });
         }
         else {
-            console.log(err);
+            return res.status(500).send();
         }
     });
 });
@@ -35,32 +35,21 @@ router.post('/signin/', async (req, res) => {
 
 router.post('/signupmedical/', async (req, res) => {
     const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, medical_speciality} = req.body;
-    console.log(name);
-    console.log(last_name);
-    console.log(birth_date);
-    console.log(gender);
-    console.log(document_number);
-    console.log(email);
-    console.log(password);
-    console.log(address);
-    console.log(city_id);
-    console.log(document_type);
-    console.log(medical_speciality);
     if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !medical_speciality){
-        return res.status(410).send();
-    }
-    if(!dateValidation(birth_date)){
         return res.status(411).send();
     }
+    if(!dateValidation(birth_date)){
+        return res.status(413).send();
+    }
     if(!emailValidation(email)){
-        return res.status(412).send();
+        return res.status(415).send();
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
     mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
         if (!err) {
             if(rows[0]){
-                return res.status(413).send('Ese email ya esta asociado a otro usuario');
+                return res.status(417).send('Ese email ya esta asociado a otro usuario');
             }else{
             mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type_id) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address, city_id, document_type]], (err, rows, fields) => {
                 if (!err) {
@@ -97,21 +86,20 @@ router.post('/signupmedical/', async (req, res) => {
 router.post('/signupuser/', async (req, res) => {
     const { name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type, weight, height, insurance_number, insurance_id} = req.body;
     if(!name || !last_name || !birth_date || !gender || !document_number || !email || !password || !address || !city_id || !document_type || !weight || !height || !insurance_number || !insurance_id){
-        return res.status(410).send();
-    }
-    if(!dateValidation(birth_date)){
-        console.log(birth_date);
         return res.status(411).send();
     }
+    if(!dateValidation(birth_date)){
+        return res.status(413).send();
+    }
     if(!emailValidation(email)){
-        return res.status(412).send();
+        return res.status(415).send();
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
     mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
         if (!err) {
             if(rows[0]){
-                return res.status(413).send();
+                return res.status(417).send();
             }else{
                 mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
                 if (!err) {
