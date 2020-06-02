@@ -1,5 +1,5 @@
 const mysql = require ('mysql');
-const _testMode = true;
+const _testMode = false;
 
 /*
     Use testmode for test porpuses
