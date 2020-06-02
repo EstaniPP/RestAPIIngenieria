@@ -13,7 +13,7 @@ router.post('/signin/', async (req, res) => {
     }
     const email = req.body.email;
     let user; 
-    mysqlConnection.query('SELECT * FROM users WHERE email = ?', email, async (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM Users WHERE email = ?', email, async (err, rows, fields) => {
         if (!err) {
             user = rows[0];
             if(!user) {
@@ -46,16 +46,16 @@ router.post('/signupmedical/', async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
-    mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
+    mysqlConnection.query('select id from Users where email = ?', [email], (err, rows, fields) => {
         if (!err) {
             if(rows[0]){
                 return res.status(417).send('Ese email ya esta asociado a otro usuario');
             }else{
-            mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type_id) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address, city_id, document_type]], (err, rows, fields) => {
+            mysqlConnection.query('INSERT INTO Users (name, last_name, birth_date, gender, document_number, email, password, address, city_id, document_type_id) VALUES (?)', [[name, last_name, birth_date, gender, document_number, email, newPassword, address, city_id, document_type]], (err, rows, fields) => {
                 if (!err) {
-                    mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
+                    mysqlConnection.query('select id from Users where email = ?', [email], (err, rows, fields) => {
                         if(!err){
-                            mysqlConnection.query('Insert into medical_personnel (user_id, medical_speciality_id) values (?,?);', [rows[0].id, medical_speciality], (err, rows, fields) => {
+                            mysqlConnection.query('Insert into Medical_Personnel (user_id, medical_speciality_id) values (?,?);', [rows[0].id, medical_speciality], (err, rows, fields) => {
                                 if(!err){
                                     console.log({ status:"El medico ha sido agregado correctamente" });
                                     const token = jwt.sign({ id: email }, secret);
@@ -96,14 +96,14 @@ router.post('/signupuser/', async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const newPassword = await bcrypt.hash(password, salt);
-    mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
+    mysqlConnection.query('select id from Users where email = ?', [email], (err, rows, fields) => {
         if (!err) {
             if(rows[0]){
                 return res.status(417).send();
             }else{
-                mysqlConnection.query('INSERT INTO users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
+                mysqlConnection.query('INSERT INTO Users (name, last_name, birth_date, gender, document_type_id, document_number, email, password, city_id, address) VALUES (?)', [[name, last_name, birth_date, gender, document_type, document_number, email, newPassword, city_id, address]], (err, rows, fields) => {
                 if (!err) {
-                    mysqlConnection.query('select id from users where email = ?', [email], (err, rows, fields) => {
+                    mysqlConnection.query('select id from Users where email = ?', [email], (err, rows, fields) => {
                         if(!err){
                                 mysqlConnection.query('Insert into Device_Users (weight, height, insurance_number, insurance_id, user_id) values (?)', [[weight, height, insurance_number, insurance_id, rows[0].id]], (err, rows, fields) => {
                                 if(!err){
