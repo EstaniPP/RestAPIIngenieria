@@ -20,26 +20,26 @@ if(!_testMode){
         database:'mydb'
     };
 }
-
-function handleDisconnect(){
-    const connection = mysql.createConnection(dbConnection);
-    connection.connect(function (err){
-        if(err){
-            console.log("Error when connecting to the database", err);
+var connection;
+function handleDisconnect() {
+    connection = mysql.createConnection(dbConnection); 
+    connection.connect(function(err) {             
+        if(err) {                                     
+            console.log('error when connecting to db:', err);
             setTimeout(handleDisconnect, 2000); 
         }else{
-            console.log('db connection accomplished');
-        }
+            console.log("db connection accomplished");
+        }                                     
+    });                                     
+    connection.on('error', function(err) {
+        console.log('db error', err);
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.log("reconnectiong to database due to an error or timeout"); 
+            handleDisconnect();                        
+        }else{                                   
+            throw err;
+        }                               
     });
-    connection.on('error', function(erro) {
-        console.log('db error', erro);
-        if(erro.code === 'PROTOCOL_CONNECTION_LOST') { 
-          handleDisconnect();                         
-        } else {                                     
-          throw erro;                                  
-        }
-    });
-    return connection;
-};
-
-module.exports = handleDisconnect();
+}
+handleDisconnect();
+module.exports = connection;
