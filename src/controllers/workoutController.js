@@ -3,11 +3,18 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 const dateValidation = require('../functionalMethods/dateValidation');
+const verifyTokenGeneral = require('./verifyTokenGeneral');
 
-router.get('/workout/:fk&:id', (req, res) => {
+router.get('/workout/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
-        mysqlConnection.query('SELECT * FROM Workouts WHERE device_user_id = ?', [id], (err, rows, fields) => {
+        const device_user_id;
+        if(id == 0){
+            device_user_id = req.child_id;
+        } else {
+            device_user_id = id;
+        }
+        mysqlConnection.query('SELECT * FROM Workouts WHERE device_user_id = ?', [device_user_id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {
@@ -15,7 +22,13 @@ router.get('/workout/:fk&:id', (req, res) => {
             }
         });
     } else if(fk == 'medical_personnel_id'){
-        mysqlConnection.query('SELECT * FROM Workouts WHERE medical_personnel_id = ?', [id], (err, rows, fields) => {
+        const medical_personnel_id;
+        if(id == 0){
+            medical_personnel_id = req.child_id;
+        } else {
+            medical_personnel_id = id;
+        }
+        mysqlConnection.query('SELECT * FROM Workouts WHERE medical_personnel_id = ?', [medical_personnel_id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {

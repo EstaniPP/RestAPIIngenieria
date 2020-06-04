@@ -3,11 +3,18 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 const emailValidation = require('../functionalMethods/emailValidation');
+const verifyTokenUser = require('./verifyTokenUser');
 
-router.get('/emergencyContact/:fk&:id', (req, res) => {
+router.get('/emergencyContact/:fk&:id', verifyTokenUser, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
-        mysqlConnection.query('SELECT * FROM Emergency_Contacts WHERE device_user_id = ?', [id], (err, rows, fields) => {
+        const device_user_id;
+        if(id == 0){
+            device_user_id = req.id;
+        } else {
+            device_user_id = id;
+        }
+        mysqlConnection.query('SELECT * FROM Emergency_Contacts WHERE device_user_id = ?', [device_user_id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {
