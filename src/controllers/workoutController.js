@@ -24,7 +24,7 @@ router.get('/workout/:fk&:id', verifyTokenGeneral, (req, res) => {
             }
         });
     } else if(fk == 'medical_personnel_id'){
-        const medical_personnel_id;
+        var medical_personnel_id;
         if(id == 0){
             medical_personnel_id = req.child_id;
         } else {

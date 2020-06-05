@@ -19,7 +19,6 @@ app.use(require('./controllers/passwordController'));
 
 app.use(require('./controllers/cityController'));
 app.use(require('./controllers/countryController'));
-/*
 //Controllers generales
 app.use(require('./controllers/usersJoinsController'));
 
@@ -41,7 +40,6 @@ app.use(require('./controllers/workoutController'));
 app.use(require('./controllers/workoutExerciseController'));
 app.use(require('./controllers/workoutReportController'));
 //Starting server
-*/
 app.listen(app.get('port'), () => {
     console.log('Server andando en port');
 });
