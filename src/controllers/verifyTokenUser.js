@@ -14,7 +14,6 @@ async function verifyTokenUser(req, res, next) {
             mysqlConnection.query('SELECT * FROM Users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
                 if (!err) {
                     User = rows[0];
-                    req.id = rows[0].id;
                     if(!User) {
                         return res.status(402).send();
                     }else{
@@ -22,8 +21,8 @@ async function verifyTokenUser(req, res, next) {
                         mysqlConnection.query('SELECT * FROM Device_Users WHERE User_id = ?', [User_id], async (err, rows, fields) => {
                             if (!err) {
                                 User = rows[0];
+                                req.id = rows[0].id;
                                 if(!User) {
-
                                     return res.status(403).send();
                                 }else{
                                     next();
