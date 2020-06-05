@@ -2,11 +2,18 @@ const express = require('express');
 const router = express.Router();
 
 const mysqlConnection = require('../database');
+const verifyTokenGeneral = require('./verifyTokenGeneral');
 
-router.get('/phoneNumber/:fk&:id', (req, res) => {
+router.get('/phoneNumber/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'user_id'){
-        mysqlConnection.query('SELECT * FROM Phone_Numbers WHERE user_id = ?', [id], (err, rows, fields) => {
+        const user_id;
+        if(id == 0){
+            user_id = req.id;
+        } else {
+            user_id = id;
+        }
+        mysqlConnection.query('SELECT * FROM Phone_Numbers WHERE user_id = ?', [user_id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {
