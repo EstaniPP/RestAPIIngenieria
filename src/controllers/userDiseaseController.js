@@ -7,7 +7,7 @@ const verifyTokenUser = require('./verifyTokenUser');
 router.get('/userDisease/:fk&:id', verifyTokenUser, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
-        const device_user_id;
+        var device_user_id;
         if(id == 0){
             device_user_id = req.id;
         } else {

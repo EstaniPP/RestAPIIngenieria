@@ -7,7 +7,7 @@ const verifyTokenGeneral = require('./verifyTokenGeneral');
 router.get('/medicalPersonnel/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'user_id'){
-        const user_id;
+        var user_id;
         if(id == 0){
             user_id = req.id;
         } else {
