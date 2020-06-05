@@ -55,16 +55,16 @@ router.get('/emailReport/', (req, res) => {
     });
 });
 
-router.post('/emailReport/', (req, res) => {
-    const { device_user_id, report_date, emergency_contact_id } = req.body;
-    if(!device_user_id || !report_date || !emergency_contact_id){
+router.post('/emailReport/', verifyTokenUser , (req, res) => {
+    const { report_date, emergency_contact_id } = req.body;
+    if(!report_date || !emergency_contact_id){
         return res.status(411).send();
     }
     if(!datetimeValidation(report_date)){
         return res.status(412).send();
     }
     const query = 'INSERT INTO Email_Reports(device_user_id, report_date, emergency_contact_id) VALUES (?,?,?)';
-    mysqlConnection.query(query, [device_user_id, report_date, emergency_contact_id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, report_date, emergency_contact_id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
@@ -73,17 +73,17 @@ router.post('/emailReport/', (req, res) => {
     });
 });
 
-router.put('/emailReport/:id', (req, res) => {
+router.put('/emailReport/:id', verifyTokenUser, (req, res) => {
     const { id } = req.params;
-    const { device_user_id, report_date, emergency_contact_id } = req.body;
-    if(!device_user_id || !report_date || !emergency_contact_id){
+    const { report_date, emergency_contact_id } = req.body;
+    if(!report_date || !emergency_contact_id){
         return res.status(411).send();
     }
     if(!datetimeValidation(report_date)){
         return res.status(412).send();
     }
     const query = 'UPDATE Email_Reports SET device_user_id = ?, report_date = ?, emergency_contact_id = ? WHERE id = ?';
-    mysqlConnection.query(query, [device_user_id, report_date, emergency_contact_id, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, report_date, emergency_contact_id, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {

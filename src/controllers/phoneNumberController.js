@@ -46,13 +46,13 @@ router.get('/phoneNumber/', (req, res) => {
     });
 });
 
-router.post('/phoneNumber/', (req, res) => {
-    const { user_id, number } = req.body;
-    if(!user_id || !number){
+router.post('/phoneNumber/', verifyTokenGeneral, (req, res) => {
+    const { number } = req.body;
+    if(!number){
         return res.status(411).send();
     }
     const query = 'INSERT INTO Phone_Numbers(user_id, number) VALUES (?,?)';
-    mysqlConnection.query(query, [user_id, number], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, number], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
@@ -61,14 +61,14 @@ router.post('/phoneNumber/', (req, res) => {
     });
 });
 
-router.put('/phoneNumber/:id', (req, res) => {
+router.put('/phoneNumber/:id', verifyTokenGeneral, (req, res) => {
     const { id } = req.params;
-    const { user_id, number } = req.body;
-    if(!user_id || !number){
+    const { number } = req.body;
+    if(!number){
         return res.status(411).send();
     }
     const query = 'UPDATE Phone_Numbers SET user_id = ?, number = ? WHERE id = ?';
-    mysqlConnection.query(query, [user_id, number, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, number, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {

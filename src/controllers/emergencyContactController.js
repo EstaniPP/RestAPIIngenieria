@@ -47,16 +47,16 @@ router.get('/emergencyContact/', (req, res) => {
     });
 });
 
-router.post('/emergencyContact/', (req, res) => {
-    const { device_user_id, name, email, relation } = req.body;
-    if(!device_user_id || !name || !email){
+router.post('/emergencyContact/', verifyTokenUser, (req, res) => {
+    const { name, email, relation } = req.body;
+    if(!name || !email){
         return res.status(411).send();
     }
     if(!emailValidation(email)){
         return res.status(415).send();
     }
     const query = 'INSERT INTO Emergency_Contacts(device_user_id, name, email, relation) VALUES (?,?,?,?)';
-    mysqlConnection.query(query, [device_user_id, name, email, relation], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, name, email, relation], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
@@ -65,17 +65,17 @@ router.post('/emergencyContact/', (req, res) => {
     });
 });
 
-router.put('/emergencyContact/:id', (req, res) => {
+router.put('/emergencyContact/:id', verifyTokenUser, (req, res) => {
     const { id } = req.params;
-    const { device_user_id, name, email, relation } = req.body;
-    if(!device_user_id || !name || !email){
+    const { name, email, relation } = req.body;
+    if(!name || !email){
         return res.status(411).send();
     }
     if(!emailValidation(email)){
         return res.status(415).send();
     }
     const query = 'UPDATE Emergency_Contacts SET device_user_id = ?, name = ?, email = ?, relation = ? WHERE id = ?';
-    mysqlConnection.query(query, [device_user_id, name, email, relation, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, name, email, relation, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
