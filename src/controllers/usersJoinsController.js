@@ -18,6 +18,8 @@ router.get('/medicalinfo/',verifyTokenMedical, (req,res) =>{
                     const medicalinfo = await rows[0];
                     user.medical_speciality_id = medicalinfo.medical_speciality_id;
                     user.password = '';
+                    user.id = '';
+                    user.user_id = '';
                     return res.status(200).json(user);
                 }
                 else {
@@ -47,6 +49,8 @@ router.get('/userinfo/',verifyTokenUser, async (req,res) =>{
                             user.insurance_number = userinfo.insurance_number;
                         }
                         user.password = '';
+                        user.id = '';
+                        user.user_id = '';
                         return res.status(200).json(user)
                     }
                     else {
