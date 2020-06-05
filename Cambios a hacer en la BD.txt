@@ -1,0 +1,36 @@
+NUEVOS REQUERIMIENTOS Y REQUERIMIENTOS DE MAURO
+
+Crear N:N entre device user y medical
+
+Crear tabla de lenguajes y hacer una N:N con medico
+
+Crear un campo "disponible" de tipo boolean en la tabla medical_personnel
+
+Modificaciones a hacer en endpoint
+
+post signupuser
+
+Los campos que aparecen en el signup user son los siguientes:
+name
+lastname
+credential id
+document type
+birthday date
+email
+password
+
+El resto de la información se ha de completar cuando el usuario ya está logeado, por lo que este endpoint “debe” tener solo esos parámetros ó permitir que el resto sean nulos.
+
+post signupmedical
+
+Los campos que aparecen en el signup user son los siguientes:
+name
+lastname
+credential id
+document type
+birthday date
+medical speciality
+email
+password
+
+El resto de la información se ha de completar cuando el usuario ya está logeado, por lo que este endpoint “debe” tener solo esos parámetros ó permitir que el resto sean nulos.
