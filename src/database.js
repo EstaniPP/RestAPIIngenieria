@@ -20,6 +20,14 @@ if(!_testMode){
         database:'mydb'
     };
 }
+var pool  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'remotemysql.com',
+    user            : 'jvWEfvA56X',
+    password        : '95HRIGJaq3',
+    database        : 'jvWEfvA56X'
+});
+/*
 var connection;
 function handleDisconnect() {
     connection = mysql.createConnection(dbConnection); 
@@ -42,4 +50,6 @@ function handleDisconnect() {
     });
 }
 handleDisconnect();
-module.exports = connection;
+*/
+//module.exports = connection;
+module.exports = pool;

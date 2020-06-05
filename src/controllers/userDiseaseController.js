@@ -7,7 +7,7 @@ const verifyTokenUser = require('./verifyTokenUser');
 router.get('/userDisease/:fk&:id', verifyTokenUser, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
-        const device_user_id;
+        var device_user_id;
         if(id == 0){
             device_user_id = req.id;
         } else {
@@ -54,13 +54,13 @@ router.get('/userDisease/', (req, res) => {
     });
 });
 
-router.post('/userDisease/', (req, res) => {
-    const { device_user_id, disease_id } = req.body;
-    if(!device_user_id || !disease_id){
+router.post('/userDisease/', verifyTokenUser, (req, res) => {
+    const { disease_id } = req.body;
+    if(!disease_id){
         return res.status(411).send();
     }
     const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
-    mysqlConnection.query(query, [device_user_id, disease_id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, disease_id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
@@ -71,12 +71,12 @@ router.post('/userDisease/', (req, res) => {
 
 router.put('/userDisease/:id', (req, res) => {
     const { id } = req.params;
-    const { device_user_id, disease_id } = req.body;
-    if(!device_user_id || !disease_id){
+    const { disease_id } = req.body;
+    if(!disease_id){
         return res.status(411).send();
     }
     const query = 'UPDATE User_Diseases SET device_user_id = ?, disease_id = ? WHERE id = ?';
-    mysqlConnection.query(query, [device_user_id, disease_id, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [req.id, disease_id, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {

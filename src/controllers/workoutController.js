@@ -4,11 +4,13 @@ const router = express.Router();
 const mysqlConnection = require('../database');
 const dateValidation = require('../functionalMethods/dateValidation');
 const verifyTokenGeneral = require('./verifyTokenGeneral');
+const verifyTokenMedical = require('./verifyTokenMedical');
+const verifyTokenUser = require('./verifyTokenUser');
 
 router.get('/workout/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
-        const device_user_id;
+        var device_user_id;
         if(id == 0){
             device_user_id = req.child_id;
         } else {
@@ -61,16 +63,16 @@ router.get('/workout/', (req, res) => {
     });
 });
 
-router.post('/workout/', (req, res) => {
-    const { device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating } = req.body;
-    if(!device_user_id || !medical_personnel_id || !name || !creation_date || !difficulty || !done){
+router.post('/workout/', verifyTokenMedical, (req, res) => {
+    const { device_user_id, name, creation_date, difficulty, price} = req.body;
+    if(!device_user_id || !name || !creation_date || !difficulty){
         return res.status(411).send();
     }
     if(!dateValidation(creation_date)){
         return res.status(413).send();
     }
     const query = 'INSERT INTO Workouts(device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating) VALUES (?,?,?,?,?,?,?,?)';
-    mysqlConnection.query(query, [device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, req.id, name, creation_date, difficulty, price, false, null], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
@@ -79,17 +81,30 @@ router.post('/workout/', (req, res) => {
     });
 });
 
-router.put('/workout/:id', (req, res) => {
+router.put('/workout/:id', verifyTokenMedical, (req, res) => {
     const { id } = req.params;
-    const { device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating } = req.body;
-    if(!device_user_id || !medical_personnel_id || !name || !creation_date || !difficulty || !done){
+    const { device_user_id, name, creation_date, difficulty, price} = req.body;
+    if(!device_user_id || !name || !creation_date || !difficulty){
         return res.status(411).send();
     }
     if(!dateValidation(creation_date)){
         return res.status(413).send();
     }
     const query = 'UPDATE Workouts SET device_user_id = ?, medical_personnel_id = ?, name = ?, creation_date = ?, difficulty = ?, price = ?, done = ?, rating = ? WHERE id = ?';
-    mysqlConnection.query(query, [device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating, id], (err, rows, fields) => {
+    mysqlConnection.query(query, [device_user_id, req.id, name, creation_date, difficulty, price, false, null, id], (err, rows, fields) => {
+        if(!err){
+            return res.status(200).send();
+        } else {
+            return res.status(500).send(err);
+        }
+    });
+});
+
+router.put('/workout/setDone/:id', verifyTokenUser, (req,res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+    const query = 'UPDATE Workouts SET done = ?, rating = ? WHERE id = ?';
+    mysqlConnection.query(query, [ true, rating, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
