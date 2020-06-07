@@ -15,6 +15,7 @@ async function verifyTokenMedical(req, res, next) {
             mysqlConnection.query('SELECT * FROM Users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
                 if (!err) {
                     user = rows[0];
+                    req.user_id = rows[0].id;
                     if(!user) {
                         return res.status(402).send();
                     }else{
