@@ -1,10 +1,10 @@
 NUEVOS REQUERIMIENTOS Y REQUERIMIENTOS DE MAURO
 
-Crear N:N entre device user y medical
+Crear N:N entre device user y medical #DONE
 
-Crear tabla de lenguajes y hacer una N:N con medico
+Crear tabla de lenguajes y hacer una N:N con medico #DONE
 
-Crear un campo "disponible" de tipo boolean en la tabla medical_personnel
+Crear un campo "disponible" de tipo boolean en la tabla medical_personnel #DONE
 
 Modificaciones a hacer en endpoint
 
