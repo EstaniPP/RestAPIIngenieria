@@ -3,13 +3,14 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 const verifyTokenUser = require('./verifyTokenUser');
+const verifyTokenGeneral = require('./verifyTokenGeneral');
 
-router.get('/userDisease/:fk&:id', verifyTokenUser, (req, res) => {
+router.get('/userDisease/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
     if(fk == 'device_user_id'){
         var device_user_id;
         if(id == 0){
-            device_user_id = req.id;
+            device_user_id = req.child_id;
         } else {
             device_user_id = id;
         }
@@ -69,7 +70,7 @@ router.post('/userDisease/', verifyTokenUser, (req, res) => {
     });
 });
 
-router.put('/userDisease/:id', (req, res) => {
+router.put('/userDisease/:id', verifyTokenUser, (req, res) => {
     const { id } = req.params;
     const { disease_id } = req.body;
     if(!disease_id){
