@@ -26,7 +26,7 @@ router.post('/signin/', async (req, res) => {
             const token = jwt.sign({ id: email }, secret);
             return res.status(200).json({ auth: true, token });
         }
-        else {
+        else {    
             return res.status(500).send();
         }
     });
@@ -55,9 +55,8 @@ router.post('/signupmedical/', async (req, res) => {
                 if (!err) {
                     mysqlConnection.query('select id from Users where email = ?', [email], (err, rows, fields) => {
                         if(!err){
-                            mysqlConnection.query('Insert into Medical_Personnel (user_id) values (?);', [rows[0].id], (err, rows, fields) => {
+                            mysqlConnection.query('Insert into Medical_Personnel (user_id, medical_speciality_id) values (?,?);', [rows[0].id,medical_speciality], (err, rows, fields) => {
                                 if(!err){
-                                    console.log({ status:"El medico ha sido agregado correctamente" });
                                     const token = jwt.sign({ id: email }, secret);
                                     return res.status(200).json({ auth: true, token });
                                 } else {
