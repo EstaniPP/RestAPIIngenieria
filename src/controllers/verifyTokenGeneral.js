@@ -18,11 +18,11 @@ async function verifyTokenGeneral(req, res, next) {
                     if(!user) {
                         return res.status(402).send("Token invalido")
                     }else{
-                        mysqlConnection.query('SELECT * FROM Medical_Personnel WHERE user_id = ?', [user_id], async (err, rows, fields) => {
+                        mysqlConnection.query('SELECT * FROM Medical_Personnel WHERE user_id = ?', [req.id], async (err, rows, fields) => {
                             if (!err) {
                                 user = rows[0];
                                 if(!user) {
-                                    mysqlConnection.query('SELECT * FROM Device_Users WHERE User_id = ?', [User_id], async (err, rows, fields) => {
+                                    mysqlConnection.query('SELECT * FROM Device_Users WHERE User_id = ?', [req.id], async (err, rows, fields) => {
                                         if (!err) {
                                             User = rows[0];
                                             if(!User) {
