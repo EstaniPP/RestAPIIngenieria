@@ -31,7 +31,6 @@ router.get('/medicalinfo/',verifyTokenMedical, (req,res) =>{
     })
 });
 
-
 router.get('/userinfo/',verifyTokenUser, async (req,res) =>{
     //aca uso un id que me inserto el middleWare y lo uso como req.user_id
     mysqlConnection.query('SELECT * FROM Users WHERE id = ?', [req.user_id], async (err, rows, fields) => {
@@ -65,13 +64,17 @@ router.get('/userinfo/',verifyTokenUser, async (req,res) =>{
     }) 
 });
 
-router.delete('/user/',verifyTokenGeneral, (req, res) => {
-    const { id } = req.params;
-    mysqlConnection.query('DELETE FROM Users WHERE id = ?', [req.id], (err, rows, fields) => {
+router.get('/medicalList/', (req,res) => {
+    mysqlConnection.query('SELECT *, mp.id as medical_personnel_id FROM Users u INNER JOIN Medical_Personnel mp ON u.id = mp.user_id', (err, rows, fields) => {
+        rows.forEach(element => {
+            element.user_id = '';
+            element.password = '';
+            delete element.id;
+        });
         if(!err){
-            res.status(200).send();
+            return res.status(200).json(rows);
         } else {
-            res.status(500).send();
+            return res.status(500).send(err);
         }
     });
 });
@@ -111,6 +114,7 @@ router.put('/userinfo/', verifyTokenUser, async (req,res) => {
         }
     });
 });
+
 router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
     const { name, last_name, birth_date, gender, document_number, email, address, city_id, document_type, medical_speciality} = req.body;
     if(!name || !last_name || !birth_date || !gender || !document_number || !email || !address || !city_id || !document_type || !medical_speciality){
@@ -162,6 +166,17 @@ router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
         } else {
             console.log(err)
             return res.status(500).send(err);
+        }
+    });
+});
+
+router.delete('/user/',verifyTokenGeneral, (req, res) => {
+    const { id } = req.params;
+    mysqlConnection.query('DELETE FROM Users WHERE id = ?', [req.id], (err, rows, fields) => {
+        if(!err){
+            res.status(200).send();
+        } else {
+            res.status(500).send();
         }
     });
 });
