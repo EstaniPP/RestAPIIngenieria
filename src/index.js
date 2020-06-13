@@ -16,7 +16,8 @@ app.use(require('./controllers/authController'));
 app.use(require('./controllers/mpController'));
 // MercadoPago services
 app.use(require('./controllers/passwordController'));
-
+// Subscriptions services
+app.use(require('./controllers/subscriptionController'));
 app.use(require('./controllers/cityController'));
 app.use(require('./controllers/countryController'));
 //Controllers generales
