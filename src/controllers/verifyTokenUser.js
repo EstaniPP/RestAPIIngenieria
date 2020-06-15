@@ -9,7 +9,6 @@ async function verifyTokenUser(req, res, next) {
     }
     try{
         const decoded = jwt.verify(token, secret, function(err, decoded) {
-        console.log(decoded)
         mysqlConnection.query('SELECT * FROM Users WHERE email = ?', [decoded.id], async (err, rows, fields) => {
             if (!err) {
                 User = rows[0];
@@ -18,11 +17,9 @@ async function verifyTokenUser(req, res, next) {
                     return res.status(402).send();
                 }else{
                     const User_id = rows[0].id;
-                    console.log(User_id)
                     mysqlConnection.query('SELECT * FROM Device_Users WHERE user_id = ?', [User_id], async (err, rows, fields) => {
                         if (!err) {
                             User = rows[0];
-                            console.log(rows)
                             req.id = rows[0].id;
                             if(!User) {
                                 return res.status(403).send();

@@ -23,8 +23,18 @@ router.post('/signin/', async (req, res) => {
             if (!validPassword) {
                 return res.status(407).send();
             }
-            const token = jwt.sign({ id: email }, secret);
-            return res.status(200).json({ auth: true, token });
+            mysqlConnection.query('SELECT * FROM Medical_Personnel WHERE user_id = ?', user.id, async (err, rows, fields) => {
+                if (!err) {
+                    user = rows[0];
+                    if(!user) {
+                        const token = jwt.sign({ id: email }, secret);
+                        return res.status(200).json({ auth: true, token, type: 'd' });
+                    }else{
+                        const token = jwt.sign({ id: email }, secret);
+                        return res.status(200).json({ auth: true, token, type: 'm' });
+                    }
+                }
+            });
         }
         else {    
             return res.status(500).send();
@@ -58,7 +68,7 @@ router.post('/signupmedical/', async (req, res) => {
                             mysqlConnection.query('Insert into Medical_Personnel (user_id, medical_speciality_id) values (?,?);', [rows[0].id,medical_speciality], (err, rows, fields) => {
                                 if(!err){
                                     const token = jwt.sign({ id: email }, secret);
-                                    return res.status(200).json({ auth: true, token });
+                                    return res.status(200).json({ auth: true, token, type: 'm'});
                                 } else {
                                     console.log(err);
                                     return res.status(500).send(err);
@@ -106,9 +116,8 @@ router.post('/signupuser/', async (req, res) => {
                         if(!err){
                                 mysqlConnection.query('Insert into Device_Users (user_id) values (?)', [rows[0].id], (err, rows, fields) => {
                                 if(!err){
-                                    console.log({ status:"El usuario ha sido agregado correctamente" });
                                     const token = jwt.sign({ id: email }, secret);
-                                    return res.status(200).json({ auth: true, token });
+                                    return res.status(200).json({ auth: true, token, type: 'd' });
                                 } else {
                                     console.log(err);
                                     return res.status(500).send(err);
