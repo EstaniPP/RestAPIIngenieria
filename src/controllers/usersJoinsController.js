@@ -132,7 +132,7 @@ router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
                 return res.status(200).send();
             }else{
                 if(rows[0].email != email){
-                    mysqlConnection.query('UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_number = ?, email = ?, address = ?, city_id = ?, document_type_id = ? WHERE id = ?', [name, last_name, birth_date, gender, document_number, email, address, city_id, document_type, req.id], (err, rows, fields) => {
+                    mysqlConnection.query('UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_number = ?, email = ?, address = ?, city_id = ?, document_type_id = ? WHERE id = ?', [name, last_name, birth_date, gender, document_number, email, address, city_id, document_type, req.user_id], (err, rows, fields) => {
                         if(!err){
                             mysqlConnection.query('UPDATE Medical_Personnel  SET user_id = ?, medical_speciality_id = ? WHERE id = ?;', [req.user_id, medical_speciality, req.id], (err, rows, fields) => {
                                 if(!err){
@@ -147,7 +147,7 @@ router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
                         }
                     });
                 }else{
-                    mysqlConnection.query('UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_number = ?, address = ?, city_id = ?, document_type_id = ? WHERE id = ?', [name, last_name, birth_date, gender, document_number, address, city_id, document_type, req.id], (err, rows, fields) => {
+                    mysqlConnection.query('UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_number = ?, address = ?, city_id = ?, document_type_id = ? WHERE id = ?', [name, last_name, birth_date, gender, document_number, address, city_id, document_type, req.user_id], (err, rows, fields) => {
                         if(!err){
                             mysqlConnection.query('UPDATE Medical_Personnel  SET user_id = ?, medical_speciality_id = ? WHERE id = ?;', [req.user_id, medical_speciality, req.id], (err, rows, fields) => {
                                 if(!err){

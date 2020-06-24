@@ -17,6 +17,7 @@ async function verifyTokenMedical(req, res, next) {
                     if(!user) {
                         return res.status(402).send();
                     }else{
+                        console.log(rows[0])
                         req.user_id = rows[0].id;
                         const user_id = rows[0].id;
                         mysqlConnection.query('SELECT * FROM Medical_Personnel WHERE user_id = ?', [user_id], async (err, rows, fields) => {
