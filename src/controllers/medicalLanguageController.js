@@ -3,18 +3,17 @@ const router = express.Router();
 
 const mysqlConnection = require('../database');
 const verifyTokenGeneral = require('./verifyTokenGeneral');
-const verifyTokenMedical = require('./verifyTokenMedical');
 
-router.get('/medicalLanguage/:fk&:id', verifyTokenGeneral, (req, res) => {
+router.get('/userLanguage/:fk&:id', verifyTokenGeneral, (req, res) => {
     const { fk, id } = req.params;
-    if(fk == 'medical_personnel_id'){
-        var medical_personnel_id;
+    if(fk == 'user_id'){
+        var user_id;
         if(id == 0){
-            medical_personnel_id = req.child_id;
+            user_id = req.id;
         } else {
-            medical_personnel_id = id;
+            user_id = id;
         }
-        mysqlConnection.query('SELECT * FROM Medical_Languages WHERE medical_personnel_id = ?', [medical_personnel_id], (err, rows, fields) => {
+        mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [user_id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {
@@ -22,7 +21,7 @@ router.get('/medicalLanguage/:fk&:id', verifyTokenGeneral, (req, res) => {
             }
         });
     } else if(fk == 'language_id'){
-        mysqlConnection.query('SELECT * FROM Medical_Languages WHERE language_id = ?', [id], (err, rows, fields) => {
+        mysqlConnection.query('SELECT * FROM User_Languages WHERE language_id = ?', [id], (err, rows, fields) => {
             if(!err){
                 return res.status(200).json(rows);
             } else {
@@ -34,9 +33,9 @@ router.get('/medicalLanguage/:fk&:id', verifyTokenGeneral, (req, res) => {
     }
 });
 
-router.get('/medicalLanguage/:id', (req, res) => {
+router.get('/userLanguage/:id', (req, res) => {
     const { id } = req.params;
-    mysqlConnection.query('SELECT * FROM Medical_Languages WHERE id = ?', [id], (err, rows, fields) => {
+    mysqlConnection.query('SELECT * FROM User_Languages WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
             return res.status(200).json(rows[0]);
         } else {
@@ -45,8 +44,8 @@ router.get('/medicalLanguage/:id', (req, res) => {
     });
 });
 
-router.get('/medicalLanguage/', (req, res) => {
-    mysqlConnection.query('SELECT * FROM Medical_Languages', (err, rows, fields) => {
+router.get('/userLanguage/', (req, res) => {
+    mysqlConnection.query('SELECT * FROM User_Languages', (err, rows, fields) => {
         if(!err){
             return res.status(200).json(rows);
         } else {
@@ -55,12 +54,12 @@ router.get('/medicalLanguage/', (req, res) => {
     });
 });
 
-router.post('/medicalLanguage/', verifyTokenMedical, (req, res) => {
+router.post('/userLanguage/', verifyTokenGeneral, (req, res) => {
     const { language_id } = req.body;
     if(!language_id){
         return res.status(411).send();
     }
-    const query = 'INSERT INTO Medical_Languages(medical_personnel_id, language_id) VALUES (?,?)';
+    const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
     mysqlConnection.query(query, [req.id, language_id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
@@ -70,13 +69,13 @@ router.post('/medicalLanguage/', verifyTokenMedical, (req, res) => {
     });
 });
 
-router.put('/medicalLanguage/:id', verifyTokenMedical, (req, res) => {
+router.put('/userLanguage/:id', verifyTokenGeneral, (req, res) => {
     const { id } = req.params;
     const { language_id } = req.body;
     if(!language_id){
         return res.status(411).send();
     }
-    const query = 'UPDATE Medical_Languages SET medical_personnel_id = ?, language_id = ? WHERE id = ?';
+    const query = 'UPDATE User_Languages SET user_id = ?, language_id = ? WHERE id = ?';
     mysqlConnection.query(query, [req.id, language_id, id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
@@ -86,9 +85,9 @@ router.put('/medicalLanguage/:id', verifyTokenMedical, (req, res) => {
     });
 });
 
-router.delete('/medicalLanguage/:id', (req, res) => {
+router.delete('/userLanguage/:id', (req, res) => {
     const { id } = req.params;
-    mysqlConnection.query('DELETE FROM Medical_Languages WHERE id = ?', [id], (err, rows, fields) => {
+    mysqlConnection.query('DELETE FROM User_Languages WHERE id = ?', [id], (err, rows, fields) => {
         if(!err){
             return res.status(200).send();
         } else {
