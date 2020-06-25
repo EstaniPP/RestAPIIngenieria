@@ -33,7 +33,7 @@ app.use(require('./controllers/heartRateSignalController'));
 app.use(require('./controllers/insuranceController'));
 app.use(require('./controllers/languageController'));
 //app.use(require('./controllers/medicalPersonnelController'));
-app.use(require('./controllers/medicalLanguageController'));
+app.use(require('./controllers/userLanguageController'));
 app.use(require('./controllers/medicalSpecialityController'));
 app.use(require('./controllers/patientController'));
 app.use(require('./controllers/phoneNumberController'));
