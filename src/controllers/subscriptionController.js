@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+var async = require("async");
 
 const mysqlConnection = require('../database');
 
@@ -64,14 +65,29 @@ router.put('/subscriptions/renew/:id_medico', verifyTokenUser, (req, res) => {
     })
 });
 router.get('/subscriptions/get', verifyTokenUser, (req, res) => {
-    mysqlConnection.query("SELECT Medical_Personnel_id, amount, expires FROM Subscriptions WHERE Device_Users_id = '?'", [req.id], (err, rows, fields) => {
+    mysqlConnection.query("SELECT * FROM Subscriptions s JOIN Medical_Personnel m ON (s.Medical_Personnel_id = m.id) JOIN Users u ON (u.id = m.user_id) WHERE s.Device_Users_id = '?'", [req.id], (err, rows, fields) => {
         if(err){
             return res.status(500).send(err);
         }else{
             if(rows.length == 0){
                 return res.status(404).send("no subscriptions found");
             }else{
-                return res.status(200).json(rows);
+                async.forEachOf(rows, function (row, key, callback) {
+                    delete rows[key].password;
+                    mysqlConnection.query('SELECT * FROM User_Languages u JOIN Languages l ON (u.language_id = l.id) WHERE u.user_id = ?', [row.user_id], (err, rowss, fields) => {
+                        if(err)
+                            callback(err);
+                        else{
+                            rows[key].languages = rowss;
+                            callback();
+                        }   
+                    });
+                }, function (err) {
+                    if(err)
+                        console.log(err);
+                    console.log("llego");
+                    return res.status(200).json(rows);
+                })
             }
         }
     })
@@ -117,14 +133,28 @@ router.put('/subscriptions/manage/:id_user', verifyTokenMedical, (req, res) => {
     })
 });
 router.get('/subscriptions/getSubscribed', verifyTokenMedical, (req, res) => {
-    mysqlConnection.query("SELECT Device_Users_id, amount, expires FROM Subscriptions WHERE Medical_Personnel_id = '?'", [req.id], (err, rows, fields) => {
+    mysqlConnection.query("SELECT * FROM Subscriptions s JOIN Device_Users d ON (s.Device_Users_id = d.id) JOIN Users u ON (d.user_id = u.id) WHERE s.Medical_Personnel_id = '?'", [req.id], (err, rows, fields) => {
         if(err){
             return res.status(500).send(err);
         }else{
             if(rows.length == 0){
                 return res.status(404).send("no subscriptions found");
             }else{
-                return res.status(200).json(rows);
+                async.forEachOf(rows, function (row, key, callback) {
+                    delete rows[key].password;
+                    mysqlConnection.query('SELECT * FROM User_Languages u JOIN Languages l ON (u.language_id = l.id) WHERE u.user_id = ?', [row.user_id], (err, rowss, fields) => {
+                        if(err)
+                            callback(err);
+                        else{
+                            rows[key].languages = rowss;
+                            callback();
+                        }   
+                    });
+                }, function (err) {
+                    if(err)
+                        console.log(err);
+                    return res.status(200).json(rows);
+                })
             }
         }
     })

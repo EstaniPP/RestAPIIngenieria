@@ -21,7 +21,7 @@ if(!_testMode){
     };
 }
 var pool  = mysql.createPool({
-    connectionLimit : 10,
+    connectionLimit : 1,
     host            : 'remotemysql.com',
     user            : 'jvWEfvA56X',
     password        : '95HRIGJaq3',

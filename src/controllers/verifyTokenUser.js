@@ -24,6 +24,7 @@ async function verifyTokenUser(req, res, next) {
                                 return res.status(403).send();
                             }else{
                                 req.id = rows[0].id;
+                                console.log({user_id: req.user_id, id: req.id});
                                 next();
                             }
                         }else {
