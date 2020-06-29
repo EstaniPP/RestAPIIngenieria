@@ -151,10 +151,24 @@ router.get('/subscriptions/getSubscribed', verifyTokenMedical, (req, res) => {
                         }   
                     });
                 }, function (err) {
-                    if(err)
+                    if(err){
                         console.log(err);
-                    return res.status(200).json(rows);
-                })
+                    }
+                    async.forEachOf(rows, function (row, key, callback) {
+                        mysqlConnection.query('SELECT * FROM User_Diseases u JOIN Diseases d ON (u.disease_id = d.id) WHERE u.device_user_id = ?', [row.Device_Users_id], (err, rowss, fields) => {
+                            if(err)
+                                callback(err);
+                            else{
+                                rows[key].diseases = rowss;
+                                callback();
+                            }   
+                        });
+                    }, function (err) {
+                        if(err)
+                            console.log(err);
+                        return res.status(200).json(rows);
+                    });
+                });
             }
         }
     })
