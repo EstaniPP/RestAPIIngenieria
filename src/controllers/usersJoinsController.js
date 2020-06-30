@@ -47,8 +47,6 @@ router.get('/userinfo/',verifyTokenUser, async (req,res) =>{
                             user.insurance_number = userinfo.insurance_number;
                         }
                         user.password = '';
-                        user.id = '';
-                        user.user_id = '';
                         return res.status(200).json(user)
                     }
                     else {
