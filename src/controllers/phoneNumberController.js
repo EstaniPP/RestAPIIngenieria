@@ -54,7 +54,7 @@ router.post('/phoneNumber/', verifyTokenGeneral, (req, res) => {
     const query = 'INSERT INTO Phone_Numbers(user_id, number) VALUES (?,?)';
     mysqlConnection.query(query, [req.id, number], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId}).send();
         } else {
             return res.status(500).send(err);
         }

@@ -62,7 +62,7 @@ router.post('/userLanguage/', verifyTokenGeneral, (req, res) => {
     const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
     mysqlConnection.query(query, [req.id, language_id], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId}).send();
         } else {
             return res.status(500).send(err);
         }
