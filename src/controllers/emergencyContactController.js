@@ -58,7 +58,7 @@ router.post('/emergencyContact/', verifyTokenUser, (req, res) => {
     const query = 'INSERT INTO Emergency_Contacts(device_user_id, name, email, relation) VALUES (?,?,?,?)';
     mysqlConnection.query(query, [req.id, name, email, relation], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId});
         } else {
             return res.status(500).send(err);
         }
@@ -77,7 +77,7 @@ router.put('/emergencyContact/:id', verifyTokenUser, (req, res) => {
     const query = 'UPDATE Emergency_Contacts SET device_user_id = ?, name = ?, email = ?, relation = ? WHERE id = ?';
     mysqlConnection.query(query, [req.id, name, email, relation, id], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"updateId": id});
         } else {
             return res.status(500).send(err);
         }

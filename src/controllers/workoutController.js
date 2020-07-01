@@ -74,7 +74,7 @@ router.post('/workout/', verifyTokenMedical, (req, res) => {
     const query = 'INSERT INTO Workouts(device_user_id, medical_personnel_id, name, creation_date, difficulty, price, done, rating) VALUES (?,?,?,?,?,?,?,?)';
     mysqlConnection.query(query, [device_user_id, req.id, name, creation_date, difficulty, price, false, null], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId});
         } else {
             return res.status(500).send(err);
         }
@@ -93,7 +93,7 @@ router.put('/workout/:id', verifyTokenMedical, (req, res) => {
     const query = 'UPDATE Workouts SET device_user_id = ?, medical_personnel_id = ?, name = ?, creation_date = ?, difficulty = ?, price = ?, done = ?, rating = ? WHERE id = ?';
     mysqlConnection.query(query, [device_user_id, req.id, name, creation_date, difficulty, price, false, null, id], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"updateId": id});
         } else {
             return res.status(500).send(err);
         }
