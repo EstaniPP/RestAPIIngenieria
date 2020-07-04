@@ -32,7 +32,7 @@ router.post('/exercise/', (req, res) => {
     const query = 'INSERT INTO Exercises(description, path) VALUES (?,?)';
     mysqlConnection.query(query, [description, path], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId}).send();
         } else {
             return res.status(500).send(err);
         }
