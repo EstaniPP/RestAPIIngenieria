@@ -51,7 +51,7 @@ router.post('/workoutReport/', (req, res) => {
     const query = 'INSERT INTO Workout_Reports(workout_id, execution_date) VALUES (?,?)';
     mysqlConnection.query(query, [workout_id, execution_date], (err, rows, fields) => {
         if(!err){
-            return res.status(200).send();
+            return res.status(200).json({"insertId": rows.insertId}).send();
         } else {
             return res.status(500).send(err);
         }
