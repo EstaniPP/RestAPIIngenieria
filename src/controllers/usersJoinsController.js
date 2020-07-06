@@ -112,7 +112,7 @@ router.put('/userinfo/', verifyTokenUser, async (req,res) => {
                                 })
                                 diseases.forEach(disease =>{
                                     const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
-                                    mysqlConnection.query(query, [req.user_id, disease_id], (err, rows, fields) => {});
+                                    mysqlConnection.query(query, [req.user_id, disease.id], (err, rows, fields) => {});
                                 });
                                 return res.status(200).send();
                             } else {
