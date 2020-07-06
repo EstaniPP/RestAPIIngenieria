@@ -21,8 +21,8 @@ router.get('/medicalinfo/',verifyTokenMedical, (req,res) =>{
                     user.user_id = '';
                     mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
                         user.languages = rows;
+                        return res.status(200).json(user);
                     });
-                    return res.status(200).json(user);
                 }
                 else {
                     return res.status(500).send(err);
@@ -50,13 +50,13 @@ router.get('/userinfo/',verifyTokenUser, async (req,res) =>{
                             user.insurance_number = userinfo.insurance_number;
                             mysqlConnection.query('SELECT * FROM User_Diseases WHERE device_user_id = ?', [req.user_id], (err, rows, fields) => {
                                 user.diseases = rows;
-                            });
-                            mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
-                                user.languages = rows;
+                                mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
+                                    user.languages = rows;
+                                    user.password = '';
+                                    return res.status(200).json(user)
+                                });
                             });
                         }
-                        user.password = '';
-                        return res.status(200).json(user)
                     }
                     else {
                         return res.status(500).send();
