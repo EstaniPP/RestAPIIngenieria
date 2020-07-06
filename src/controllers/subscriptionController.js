@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-var async = require("async");
 
 const mysqlConnection = require('../database');
 
