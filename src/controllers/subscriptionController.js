@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const mysqlConnection = require('../database');
-
+var async = require('async');
 const verifyTokenMedical = require('./verifyTokenMedical');
 const verifyTokenUser = require('./verifyTokenUser');
 
