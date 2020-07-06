@@ -19,10 +19,10 @@ router.get('/medicalinfo/',verifyTokenMedical, (req,res) =>{
                     user.password = '';
                     user.id = '';
                     user.user_id = '';
-                    mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
-                        user.languages = rows;
-                        return res.status(200).json(user);
-                    });
+                        mysqlConnection.query('SELECT * FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
+                            user.languages = rows;
+                            return res.status(200).json(user);
+                        });
                 }
                 else {
                     return res.status(500).send(err);
@@ -105,16 +105,20 @@ router.put('/userinfo/', verifyTokenUser, async (req,res) => {
                 mysqlConnection.query('UPDATE Users SET name = ?, last_name = ?, birth_date = ?, gender = ?, document_type_id = ?, document_number = ?, email = ?, city_id = ?, address = ?  where id = ? ', [name, last_name, birth_date, gender, document_type, document_number, email, city_id, address,req.user_id], (err, rows, fields) => {
                     if(!err){
                             mysqlConnection.query('UPDATE Device_Users SET weight = ?, height = ?, insurance_number = ?, insurance_id = ?, user_id = ? WHERE id = ?', [weight, height, insurance_number, insurance_id, req.user_id, req.id], (err, rows, fields) => {
-                            if(!err){
-                                languages.forEach(language =>{
-                                    const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
-                                    mysqlConnection.query(query, [req.user_id, language.id], (err, rows, fields) => {});
-                                })
-                                diseases.forEach(disease =>{
-                                    const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
-                                    mysqlConnection.query(query, [req.user_id, disease.id], (err, rows, fields) => {});
+                            if(!err){                            
+                            mysqlConnection.query('DELETE FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {    
+                                mysqlConnection.query('DELETE FROM User_Diseases WHERE device_user_id = ?', [req.user_id], (err, rows, fields) => {
+                                    languages.forEach(language =>{
+                                        const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
+                                        mysqlConnection.query(query, [req.user_id, language.id], (err, rows, fields) => {});
+                                    })
+                                    diseases.forEach(disease =>{
+                                        const query = 'INSERT INTO User_Diseases(device_user_id, disease_id) VALUES (?,?)';
+                                        mysqlConnection.query(query, [req.user_id, disease.id], (err, rows, fields) => {});
+                                    });
+                                    return res.status(200).send();
                                 });
-                                return res.status(200).send();
+                            });
                             } else {
                                 return res.status(500).send(err);
                             }
@@ -151,11 +155,13 @@ router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
                         if(!err){
                             mysqlConnection.query('UPDATE Medical_Personnel  SET user_id = ?, medical_speciality_id = ? WHERE id = ?;', [req.user_id, medical_speciality, req.id], (err, rows, fields) => {
                                 if(!err){
-                                    languages.forEach(language =>{
-                                        const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
-                                        mysqlConnection.query(query, [req.id, language.id], (err, rows, fields) => {});
-                                    })
-                                    return res.status(200).send();
+                                    mysqlConnection.query('DELETE FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
+                                        languages.forEach(language =>{
+                                            const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
+                                            mysqlConnection.query(query, [req.user_id, language.id], (err, rows, fields) => {});
+                                        })
+                                        return res.status(200).send();
+                                    });
                                 } else {
                                     return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
                                 }
