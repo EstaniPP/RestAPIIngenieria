@@ -176,11 +176,13 @@ router.put('/medicalinfo/',verifyTokenMedical, async (req,res) =>{
                         if(!err){
                             mysqlConnection.query('UPDATE Medical_Personnel  SET user_id = ?, medical_speciality_id = ? WHERE id = ?;', [req.user_id, medical_speciality, req.id], (err, rows, fields) => {
                                 if(!err){
-                                    languages.forEach(language =>{
-                                        const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
-                                        mysqlConnection.query(query, [req.id, language.id], (err, rows, fields) => {});
-                                    })
-                                    return res.status(200).send();
+                                    mysqlConnection.query('DELETE FROM User_Languages WHERE user_id = ?', [req.user_id], (err, rows, fields) => {
+                                        languages.forEach(language =>{
+                                            const query = 'INSERT INTO User_Languages(user_id, language_id) VALUES (?,?)';
+                                            mysqlConnection.query(query, [req.user_id, language.id], (err, rows, fields) => {});
+                                        })
+                                        return res.status(200).send();
+                                    });
                                 } else {
                                     return res.status(500).send('Hubo problemas para registrar al usuario en la aplicacion');
                                 }
